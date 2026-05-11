@@ -1,8 +1,8 @@
 {
   "sys": "KAMIZEN NEURO-COGNITIVE TACTICAL SYSTEM",
   "version": "DOD-736-SFS-ELITE-STABLE-3.1",
+  "developer": "AURA BY MAY ROGA LLC",
   "total_missions": 10,
-
   "ui": {
     "fw": [
       "NEURO-STABILITY",
@@ -12,222 +12,146 @@
       "SITUATIONAL-DOMINANCE"
     ]
   },
-
   "rules": [
     "Biological Response < Professional Discipline",
     "Adaptive Stress Requires Controlled Execution",
     "ROE Compliance Overrides Performance Metrics",
     "Cognitive Stability is Primary Objective"
   ],
-
   "missions": [
-
     {
       "id": 1,
       "cat": "baseline_stability",
+      "focus": "VAGAL TONE & RESPIRATORY CONTROL",
       "b": [
-        {
-          "t": "v",
-          "tx": { "en": "MISSION 1: NEURO BASELINE CALIBRATION" }
-        },
-        {
-          "t": "breath_auto",
-          "d": 25,
-          "tx": { "en": "RESPIRATORY CONTROL PHASE" },
-          "inf": { "en": "Establish cognitive baseline stability." }
-        },
-        {
-          "t": "r",
-          "tx": { "en": "BASELINE LOCKED" },
-          "p": 50
-        }
+        { "t": "v", "tx": { "en": "MISSION 1: NEURO BASELINE CALIBRATION. PREPARING VAGAL SYNC." } },
+        { "t": "breath_auto", "d": 33, "tx": { "en": "RESONANCE BREATHING: 5.5s CYCLES" }, "inf": { "en": "Establish autonomic nervous system equilibrium." } },
+        { "t": "r", "tx": { "en": "PHYSIOLOGICAL BASELINE LOCKED. NEURAL PATHWAYS PRIMED." }, "p": 50 }
       ]
     },
-
     {
       "id": 2,
       "cat": "decision_core",
+      "focus": "PREFRONTAL CORTEX ACTIVATION",
       "b": [
-        {
-          "t": "v",
-          "tx": { "en": "MISSION 2: DECISION PROCESSING CORE" }
+        { "t": "v", "tx": { "en": "MISSION 2: DECISION PROCESSING CORE. ELIMINATING COGNITIVE BIAS." } },
+        { "t": "breath_auto", "d": 22, "tx": { "en": "OXYGENATING EXECUTIVE CENTERS" } },
+        { 
+          "t": "d", "q": { "en": "VISUAL INPUT PARTIALLY OBSCURED ON SMARTCARGO TERMINAL. WHAT IS THE PRIORITY?" },
+          "op": ["WAIT FOR CLARITY", "REQUEST DATA REDUNDANCY", "ESTIMATE BASED ON EXPERIENCE", "IGNORE AND PROCEED"],
+          "c": 1, "ex": ["Data integrity in CBP/DOT protocols is prioritized over speed."] 
         },
-        {
-          "t": "d",
-          "q": { "en": "VISUAL INPUT PARTIALLY OBSCURED. WHAT IS PRIORITY?" },
-          "op": [
-            "WAIT FOR CLARITY",
-            "REQUEST DATA",
-            "ESTIMATE",
-            "IGNORE"
-          ],
-          "c": 1,
-          "ex": [
-            "Data integrity is prioritized over speed."
-          ]
-        },
-        {
-          "t": "r",
-          "tx": { "en": "DECISION MODULE ACTIVE" },
-          "p": 80
-        }
+        { "t": "r", "tx": { "en": "DECISION MODULE ACTIVE. LATENCY ACCEPTABLE." }, "p": 80 }
       ]
     },
-
     {
       "id": 3,
       "cat": "stress_introduction",
+      "focus": "ROE AMBIGUITY RESOLUTION",
       "b": [
-        {
-          "t": "v",
-          "tx": { "en": "MISSION 3: STRESS INTRODUCTION" }
+        { "t": "v", "tx": { "en": "MISSION 3: STRESS INTRODUCTION. SIMULATING HIGH-VALUE CARGO DISCREPANCY." } },
+        { "t": "sil", "d": 20, "tx": { "en": "FOCUS RETENTION UNDER SILENCE" } },
+        { 
+          "t": "d", "q": { "en": "AVIANCA CARGO MANIFEST DISAGREES WITH PHYSICAL WEIGHT. IMMEDIATE ACTION?" },
+          "op": ["RE-WEIGH IMMEDIATELY", "HOLD SHIPMENT & NOTIFY SUPERVISOR", "CORRECT MANIFEST MANUALLY", "NOTIFY CBP PRIOR TO CHECK"],
+          "c": 1, "ex": ["Discrepancies in specialized cargo require formal administrative holds."] 
         },
-        {
-          "t": "sil",
-          "d": 20,
-          "tx": { "en": "FOCUS RETENTION PHASE" }
-        },
-        {
-          "t": "r",
-          "tx": { "en": "STRESS ACTIVE" },
-          "p": 90
-        }
+        { "t": "r", "tx": { "en": "STRESS RESPONSE STABILIZED." }, "p": 90 }
       ]
     },
-
     {
       "id": 4,
       "cat": "roe_logic",
+      "focus": "STRESS-INDUCED JITTER MITIGATION",
       "b": [
-        {
-          "t": "v",
-          "tx": { "en": "MISSION 4: ROE DECISION LOGIC" }
-        },
-        {
-          "t": "d",
-          "q": { "en": "UNKNOWN SUBJECT IN RESTRICTED AREA. ACTION?" },
-          "op": [
-            "ESCALATE",
-            "OBSERVE",
-            "SECURE",
-            "IGNORE"
-          ],
-          "c": 2,
-          "ex": [
-            "Security protocol requires containment before escalation."
-          ]
+        { "t": "v", "tx": { "en": "MISSION 4: ROE DECISION LOGIC. PROTOCOL OVER INSTINCT." } },
+        { "t": "breath_auto", "d": 22, "tx": { "en": "COHERENCE BREATHING" } },
+        { 
+          "t": "d", "q": { "en": "UNKNOWN SUBJECT IN RESTRICTED AVIANCA RAMP AREA. ACTION?" },
+          "op": ["ESCALATE TO LEO", "OBSERVE FROM DISTANCE", "SECURE AREA & CHALLENGE ID", "IGNORE - LIKELY STAFF"],
+          "c": 2, "ex": ["Security protocols require immediate containment of the breach area."] 
         }
       ]
     },
-
     {
       "id": 5,
       "cat": "cognitive_load",
+      "focus": "SITUATIONAL AWARENESS LATENCY",
       "b": [
-        {
-          "t": "v",
-          "tx": { "en": "MISSION 5: COGNITIVE LOAD TEST" }
-        },
-        {
-          "t": "sil",
-          "d": 25,
-          "tx": { "en": "MULTI-INPUT STABILIZATION" }
+        { "t": "v", "tx": { "en": "MISSION 5: COGNITIVE LOAD TEST. MULTI-CHANNEL DATA STREAMING." } },
+        { "t": "sil", "d": 25, "tx": { "en": "MULTI-INPUT STABILIZATION PHASE" } },
+        { 
+          "t": "d", "q": { "en": "SIMULTANEOUS ALERTS: TEMP CONTROL FAILURE AND CBP INSPECTION ARRIVAL. PRIORITY?" },
+          "op": ["TEMP CONTROL (CARGO SAFETY)", "CBP GREETING (COMPLIANCE)", "DELEGATE TEMP / ATTEND CBP", "SHUT DOWN SYSTEM"],
+          "c": 2, "ex": ["Strategic delegation allows for parallel compliance management."] 
         }
       ]
     },
-
     {
       "id": 6,
       "cat": "anomaly_detection",
+      "focus": "COGNITIVE LOAD SHIFTING",
       "b": [
-        {
-          "t": "v",
-          "tx": { "en": "MISSION 6: ANOMALY DETECTION" }
-        },
-        {
-          "t": "d",
-          "q": { "en": "SUBJECT BEHAVIOR DEVIATES FROM ENVIRONMENTAL NORM. CLASSIFY?" },
-          "op": [
-            "NORMAL",
-            "SUSPICIOUS",
-            "THREAT",
-            "UNKNOWN"
-          ],
-          "c": 1
+        { "t": "v", "tx": { "en": "MISSION 6: ANOMALY DETECTION. IDENTIFYING SUBTLE DEVIATIONS." } },
+        { "t": "breath_auto", "d": 22, "tx": { "en": "HYPER-FOCUS BREATHING" } },
+        { 
+          "t": "d", "q": { "en": "SUBJECT BEHAVIOR DEVIATES FROM ENVIRONMENTAL NORM DURING INSPECTION. CLASSIFY?" },
+          "op": ["NORMAL VARIANCE", "SUSPICIOUS - MONITOR", "THREAT - IMMOBILIZE", "DATA ERROR"],
+          "c": 1, "ex": ["Suspicion triggers mandatory increased surveillance under IATA standards."] 
         }
       ]
     },
-
     {
       "id": 7,
       "cat": "adaptive_pressure",
+      "focus": "MOTOR-NEURON STABILIZATION",
       "b": [
-        {
-          "t": "v",
-          "tx": { "en": "MISSION 7: ADAPTIVE PRESSURE SYSTEM" }
-        },
-        {
-          "t": "sil",
-          "d": 30,
-          "tx": { "en": "DYNAMIC LOAD SIMULATION" }
+        { "t": "v", "tx": { "en": "MISSION 7: ADAPTIVE PRESSURE SYSTEM. SIMULATING SYSTEM FAILURE." } },
+        { "t": "sil", "d": 30, "tx": { "en": "DYNAMIC LOAD SIMULATION" } },
+        { 
+          "t": "d", "q": { "en": "COMMUNICATION LINK TO TOWER IS LOST DURING CARGO LOAD. STATUS?" },
+          "op": ["CONTINUE LOADING", "PAUSE OPERATIONS", "SWITCH TO ANALOG PROTOCOL", "EVACUATE RAMP"],
+          "c": 2, "ex": ["Analog fallbacks maintain operational continuity without compromising safety."] 
         }
       ]
     },
-
     {
       "id": 8,
       "cat": "scenario_logic",
+      "focus": "HEMISPHERIC SYNCHRONIZATION",
       "b": [
-        {
-          "t": "v",
-          "tx": { "en": "MISSION 8: SCENARIO BRANCHING" }
-        },
-        {
-          "t": "d",
-          "q": { "en": "MULTIPLE SIGNALS DETECTED. PRIORITIZE?" },
-          "op": [
-            "FASTEST",
-            "HIGHEST RISK",
-            "MOST INFORMATION",
-            "UNKNOWN"
-          ],
-          "c": 1
+        { "t": "v", "tx": { "en": "MISSION 8: SCENARIO BRANCHING. COMPLEX MULTI-STAGE LOGIC." } },
+        { "t": "breath_auto", "d": 25, "tx": { "en": "CROSS-LATERAL NEURAL SYNC" } },
+        { 
+          "t": "d", "q": { "en": "MULTIPLE SIGNALS DETECTED: FIRE ALARM (ZONE B) AND SECURITY BREACH (ZONE A). PRIORITIZE?" },
+          "op": ["FIRE (LIFE SAFETY)", "BREACH (ASSET SAFETY)", "SPLIT TEAM", "EVACUATE ALL"],
+          "c": 0, "ex": ["Life safety protocols (Fire) always override asset protection."] 
         }
       ]
     },
-
     {
       "id": 9,
       "cat": "integration",
+      "focus": "PERIPHERAL VISION RETENTION",
       "b": [
-        {
-          "t": "v",
-          "tx": { "en": "MISSION 9: SYSTEM INTEGRATION" }
-        },
-        {
-          "t": "breath_auto",
-          "d": 30,
-          "tx": { "en": "FULL SYSTEM ALIGNMENT" },
-          "inf": { "en": "Synchronize cognitive and physiological response." }
+        { "t": "v", "tx": { "en": "MISSION 9: SYSTEM INTEGRATION. FULL BIO-DATA SYNTHESIS." } },
+        { "t": "breath_auto", "d": 44, "tx": { "en": "FULL SYSTEM ALIGNMENT - FINAL VAGAL TUNE" }, "inf": { "en": "Synchronize cognitive and physiological response for peak state." } },
+        { 
+          "t": "d", "q": { "en": "ALL SYSTEMS NOMINAL. CHOOSE OPTIMAL READINESS STATE." },
+          "op": ["HYPER-AROUSAL", "FLOW STATE", "RELAXED", "ANXIOUS"],
+          "c": 1, "ex": ["Flow State (Alpha-Theta border) is optimal for high-stakes execution."] 
         }
       ]
     },
-
     {
       "id": 10,
       "cat": "final_readiness",
+      "focus": "EXECUTIVE DECISION EXCELLENCE",
       "b": [
-        {
-          "t": "v",
-          "tx": { "en": "MISSION 10: OPERATIONAL READINESS CHECK" }
-        },
-        {
-          "t": "r",
-          "tx": { "en": "READY FOR SIMULATION DEPLOYMENT" },
-          "p": 500
-        }
+        { "t": "v", "tx": { "en": "MISSION 10: OPERATIONAL READINESS CHECK. PRE-VR DEPLOYMENT." } },
+        { "t": "sil", "d": 15, "tx": { "en": "FINAL NEURAL QUIET" } },
+        { "t": "r", "tx": { "en": "USER READY FOR SIMULATION DEPLOYMENT. AURA BY MAY ROGA CERTIFIED." }, "p": 500 }
       ]
     }
-
   ]
 }
