@@ -6,164 +6,211 @@
     <title>KAMIZEN TACTICAL - MISSION INTERFACE</title>
     <style>
         :root{
-            --bg:#05070a; /* Negro profundo militar */
+            --bg:#05070a; 
             --card:#0d1117;
-            --primary:#00d4ff; /* Azul HUD */
-            --success:#00ff88; /* Verde Neón Táctico */
+            --primary:#00d4ff; 
+            --success:#00ff88; 
             --danger:#ff3e3e;
             --text:#e6edf3;
             --dim:#7d8590;
             --border: 1px solid #30363d;
         }
-        *{ box-sizing:border-box; }
+        *{ box-sizing:border-box; cursor: crosshair; }
         body{
             margin:0;
-            font-family: 'Courier New', Courier, monospace; /* Fuente de terminal */
+            font-family: 'Courier New', Courier, monospace;
             background:var(--bg);
             color:var(--text);
             display:flex;
             flex-direction: column;
             align-items:center;
             min-height:100vh;
-            text-transform: uppercase; /* Todo en mayúsculas para seriedad militar */
+            text-transform: uppercase;
+            overflow-x: hidden;
         }
-        #main-container{
-            width:100%;
-            max-width:800px;
-            padding:20px;
-        }
-        .card{
-            background:var(--card);
-            padding:20px;
-            border-radius:4px; /* Menos redondeado, más industrial */
-            margin:15px 0;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
-            border: var(--border);
-            position: relative;
-        }
-        /* Decoración de esquinas tipo HUD militar */
-        .card::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 10px; height: 10px;
-            border-top: 2px solid var(--primary); border-left: 2px solid var(--primary);
-        }
-        .card::after {
-            content: ""; position: absolute; bottom: 0; right: 0; width: 10px; height: 10px;
-            border-bottom: 2px solid var(--primary); border-right: 2px solid var(--primary);
-        }
-
-        button{
-            width:100%;
-            padding:18px;
-            border: 1px solid var(--primary);
-            background: rgba(0, 212, 255, 0.05);
-            color:var(--primary);
-            font-weight:bold;
-            font-size: 16px;
-            cursor:pointer;
-            transition: 0.3s;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-        button:hover{ background:var(--primary); color: var(--bg); box-shadow: 0 0 15px var(--primary); }
-        button:disabled{ border-color: #334155; color: #334155; cursor: not-allowed; }
-
-        .answer{
-            background: rgba(255,255,255,0.02);
-            padding:15px;
-            margin:10px 0;
-            border: 1px solid #30363d;
-            cursor:pointer;
-            transition: 0.2s;
-        }
-        .answer:hover{ border-color: var(--success); background: rgba(0, 255, 136, 0.05); color: var(--success); }
-
-        /* Círculo de Respiración - Calibración Biométrica */
-        .breath-circle{
-            width:180px;
-            height:180px;
-            border-radius:50%;
-            margin:40px auto;
-            border: 2px solid var(--primary);
-            display:flex;
-            flex-direction: column;
-            align-items:center;
-            justify-content:center;
-            font-size: 14px;
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
-            transition: transform 4s ease-in-out;
-        }
-        .pulse { animation: pulse-animation 4s infinite; }
-        @keyframes pulse-animation {
-            0% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.4); opacity: 1; border-width: 4px; }
-            100% { transform: scale(1); opacity: 0.5; }
-        }
-
-        .status-bar {
-            display: flex; justify-content: space-between; font-size: 10px; color: var(--primary);
-            margin-bottom: 20px; border-bottom: 1px solid #30363d; padding-bottom: 5px;
-        }
-
-        h1,h2,h3{ margin:10px 0; letter-spacing: 3px; }
-        .center{ text-align:center; }
+        
+        /* Capa de Escaneo Visual */
         .scanline {
-            width: 100%; height: 2px; background: rgba(0, 212, 255, 0.1);
+            width: 100%; height: 2px; background: rgba(0, 212, 255, 0.05);
             position: fixed; top: 0; z-index: 999; pointer-events: none;
             animation: scan 4s linear infinite;
         }
         @keyframes scan { from { top: 0; } to { top: 100vh; } }
+
+        #main-container {
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            z-index: 2;
+        }
+
+        /* HUD Header */
+        .status-bar {
+            display: flex; justify-content: space-between; font-size: 10px; color: var(--primary);
+            margin-bottom: 20px; border-bottom: var(--border); padding-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* Contenedor Dinámico de Misiones */
+        #app {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 2px;
+            margin: 15px 0;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.05);
+            border: var(--border);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .card::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 15px; height: 15px;
+            border-top: 3px solid var(--primary); border-left: 3px solid var(--primary);
+        }
+        .card.success-border { border-color: var(--success); }
+        
+        /* Botones Tácticos */
+        #options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 20px;
+            border: 1px solid var(--primary);
+            background: rgba(0, 212, 255, 0.03);
+            color: var(--primary);
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        button:hover {
+            background: var(--primary);
+            color: var(--bg);
+            box-shadow: 0 0 20px var(--primary);
+        }
+        button:active { transform: scale(0.98); }
+
+        /* Biometría / Respiración */
+        .breath-circle {
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            margin: 40px auto;
+            border: 2px solid var(--primary);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            position: relative;
+        }
+        .pulse { animation: pulse-animation 4s infinite ease-in-out; }
+        @keyframes pulse-animation {
+            0% { transform: scale(1); opacity: 0.3; border-width: 2px; }
+            50% { transform: scale(1.2); opacity: 1; border-width: 6px; box-shadow: 0 0 50px var(--primary); }
+            100% { transform: scale(1); opacity: 0.3; border-width: 2px; }
+        }
+
+        /* Instructor Live Dashboard (Floating) */
+        #dashboard {
+            background: rgba(13, 17, 23, 0.9);
+            border: var(--border);
+            padding: 15px;
+            pointer-events: none;
+            z-index: 100;
+            border-left: 4px solid var(--primary);
+        }
+
+        .center { text-align: center; }
+        .dim { color: var(--dim); }
+        .blink { animation: blinker 1.5s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+
+        /* Estilo para el reporte PDF final */
+        .pdf-btn {
+            background: var(--success) !important;
+            color: var(--bg) !important;
+            border-color: var(--success) !important;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-<div class="scanline"></div>
+    <div class="scanline"></div>
 
-<div id="main-container">
-    <div class="status-bar">
-        <span>DEVICE: SFS-TABLET-01</span>
-        <span>SYSTEM: KAMIZEN TACTICAL v2.0</span>
-        <span>STATUS: ENCRYPTION ACTIVE</span>
-    </div>
+    <div id="main-container">
+        <!-- HEADER TÁCTICO -->
+        <div class="status-bar">
+            <div>UNIT: <span id="op-id">736-SFS-OPERATOR</span></div>
+            <div class="blink">● ENCRYPTION: AES-256-ACTIVE</div>
+            <div id="sys-clock">00:00:00</div>
+        </div>
 
-    <div class="card center">
-        <h2 style="color:var(--primary);">OPERATIONAL READINESS</h2>
-        <p style="font-size: 10px; color:var(--dim);">NEURO-COGNITIVE PRE-FLIGHT CHECK</p>
-    </div>
+        <!-- ÁREA CENTRAL DE MISIÓN (Controlada por engine.js) -->
+        <div id="app">
+            <div class="card center">
+                <h2 style="color:var(--primary);">INITIALIZING NEURO-LINK</h2>
+                <p class="dim">Sincronizando protocolos de asesoría...</p>
+                <div class="breath-circle pulse">
+                    <span style="font-size: 10px;">WAITING</span>
+                </div>
+                <button onclick="KamizenEngine.startMission(1)">INICIAR CALIBRACIÓN BASE</button>
+            </div>
+        </div>
 
-    <div id="app">
-        <div class="card center">
-            <h3 class="pulse">LOADING MISSION DATA...</h3>
-            <p style="color:var(--dim);">ESTABLISHING SECURE OFFLINE LINK</p>
+        <!-- CONTROLES OCULTOS DE ADMINISTRADOR -->
+        <div id="admin-controls" class="card" style="display:none; border-color: var(--danger);">
+            <p style="color:var(--danger); font-size: 10px;">INSTRUCTOR OVERRIDE</p>
+            <input id="missionInput" type="number" placeholder="MISSION ID" 
+                   style="width:100%;padding:12px;border:1px solid #30363d; background:#000; color:var(--primary); margin-bottom:10px;">
+            <button onclick="jumpToMissionManual()" style="border-color:var(--dim); color:var(--dim);">FORCE JUMP</button>
         </div>
     </div>
 
-    <div id="admin-controls" class="card" style="display:none; border-color: var(--danger);">
-        <p style="color:var(--danger); font-size: 10px;">ADMINISTRATOR OVERRIDE</p>
-        <input id="missionInput" type="number" placeholder="MISSION ID" 
-               style="width:100%;padding:12px;border:1px solid #30363d; background:#000; color:var(--primary); margin-bottom:10px;">
-        <button onclick="jumpToMissionManual()" style="border-color:var(--dim); color:var(--dim);">FORCE JUMP</button>
-    </div>
-</div>
+    <!-- EL DASHBOARD SE CREA DINÁMICAMENTE POR EL ENGINE.JS -->
 
-<script src="/static/js/engine.js"></script>
-
-<script>
-    // Función para activar controles de instructor (Atajo: Triple click en el título)
-    let clicks = 0;
-    document.querySelector('h2').addEventListener('click', () => {
-        clicks++;
-        if (clicks === 3) {
-            document.getElementById('admin-controls').style.display = 'block';
-            clicks = 0;
+    <!-- SCRIPTS -->
+    <script src="/static/js/engine.js"></script>
+    <script>
+        // Reloj en tiempo real para el HUD
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('sys-clock').innerText = now.toTimeString().split(' ')[0];
         }
-    });
+        setInterval(updateClock, 1000);
 
-    function jumpToMissionManual() {
-        const input = document.getElementById("missionInput");
-        const id = Number(input.value);
-        if (typeof KamizenEngine !== "undefined") {
-            KamizenEngine.startMission(id);
+        // Atajo para Instructor (Triple clic en el ID de operador)
+        let clicks = 0;
+        document.getElementById('op-id').addEventListener('click', () => {
+            clicks++;
+            if (clicks === 3) {
+                document.getElementById('admin-controls').style.display = 'block';
+                clicks = 0;
+            }
+        });
+
+        function jumpToMissionManual() {
+            const input = document.getElementById("missionInput");
+            const id = Number(input.value);
+            if (typeof KamizenEngine !== "undefined") {
+                KamizenEngine.startMission(id);
+            }
         }
-    }
-</script>
+
+        // Intercepción de descarga de PDF desde el engine
+        async function triggerDownload(reportId) {
+            window.location.href = `/api/download-report/${reportId}`;
+        }
+    </script>
 </body>
 </html>
