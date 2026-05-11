@@ -1,738 +1,268 @@
-/**
- * =========================================================
- * KAMIZEN NEURO-COGNITIVE ENGINE v3.0
- * FULL STABLE TACTICAL SYSTEM
- * =========================================================
- * ✔ No freeze
- * ✔ Stable rendering
- * ✔ Mission progression
- * ✔ Stories supported
- * ✔ Headers supported
- * ✔ Tactical decisions
- * ✔ Breathing calibration
- * ✔ Silence calibration
- * ✔ Result system
- * ✔ Notifications
- * ✔ Offline-safe architecture
- * =========================================================
- */
-
 const KamizenEngine = {
-
     currentMissionIndex: 0,
     currentStepIndex: 0,
     missionData: null,
-    timer: null,
 
-    userStats: {
-        accuracy: 0,
-        stability: 0,
-        discipline: 0,
-        focus: 0,
-        total_sessions: 0
+    // 🔥 ADAPTIVE CORE STATE
+    adaptiveState: {
+        stressLevel: 1,
+        difficultyMultiplier: 1,
+        reactionBaseline: [],
+        failureCount: 0,
+        successStreak: 0
     },
 
-    // =====================================================
-    // INIT
-    // =====================================================
+    // 📡 LIVE TELEMETRY BUFFER
+    telemetry: {
+        reactionTime: 0,
+        decisionLatency: 0,
+        stressIndex: 0,
+        cognitiveLoad: 0,
+        roeCompliance: 100,
+        hesitationIndex: 0,
+        focusStability: 100
+    },
+
+    sessionLog: [],
 
     async init() {
-
-        console.log("KAMIZEN ENGINE INITIALIZING...");
-
         try {
+            const res = await fetch('/static/missions_tactical.json');
+            this.missionData = await res.json();
 
-            const response = await fetch('/api/missions');
-
-            if (!response.ok) {
-                throw new Error("MISSION DATABASE FAILED");
-            }
-
-            this.missionData = await response.json();
-
-            console.log("MISSION DATABASE LOADED");
-
-            // AUTO START
-            this.startMission(1);
-
-        } catch (error) {
-
-            console.error("CRITICAL SYSTEM FAILURE:", error);
-
-            const container = document.getElementById('app');
-
-            container.innerHTML = `
-                <div class="card center">
-                    <h2 style="color:#ff3e3e;">
-                        DATABASE CONNECTION FAILURE
-                    </h2>
-
-                    <p style="color:#7d8590;">
-                        VERIFY API /api/missions
-                    </p>
-                </div>
-            `;
+            this.renderDashboard();
+            this.startTelemetryLoop();
+        } catch (e) {
+            console.error("ENGINE INIT FAILED", e);
         }
     },
 
-    // =====================================================
-    // START MISSION
-    // =====================================================
-
+    // =========================
+    // 🚀 MISSION CONTROL
+    // =========================
     startMission(id) {
+        this.currentMissionIndex =
+            this.missionData.missions.findIndex(m => m.id === id);
 
-        if (!this.missionData || !this.missionData.missions) {
-            console.error("MISSION DATA NOT READY");
-            return;
-        }
-
-        const index = this.missionData.missions.findIndex(
-            m => m.id === id
-        );
-
-        if (index === -1) {
-            console.error("MISSION NOT FOUND:", id);
-            return;
-        }
-
-        this.currentMissionIndex = index;
         this.currentStepIndex = 0;
+
+        this.logEvent("MISSION_START", { id });
 
         this.executeStep();
     },
 
-    // =====================================================
-    // EXECUTE STEP
-    // =====================================================
-
     executeStep() {
-
-        clearInterval(this.timer);
-
-        const mission =
-            this.missionData.missions[this.currentMissionIndex];
-
-        if (!mission) {
-            this.completeMission();
-            return;
-        }
+        const mission = this.missionData.missions[this.currentMissionIndex];
+        if (!mission) return;
 
         const step = mission.b[this.currentStepIndex];
 
         if (!step) {
-
-            this.currentMissionIndex++;
-
-            if (
-                this.currentMissionIndex >=
-                this.missionData.missions.length
-            ) {
-                this.completeMission();
-                return;
-            }
-
-            this.currentStepIndex = 0;
-
-            this.executeStep();
-
+            this.completeMission();
             return;
         }
-
-        console.log("STEP:", step);
-
-        // =================================================
-        // STORY
-        // =================================================
-
-        if (step.story) {
-            this.ui_renderStory(step.story.en);
-            return;
-        }
-
-        // =================================================
-        // STEP TYPES
-        // =================================================
 
         switch (step.t) {
 
-            // ---------------------------------------------
-            // TITLE
-            // ---------------------------------------------
-
             case 'v':
-
-                this.ui_renderTitle(step.tx.en);
-
+                this.renderTitle(step.tx.en);
                 break;
-
-            // ---------------------------------------------
-            // HEADER
-            // ---------------------------------------------
-
-            case 'h':
-
-                this.ui_renderHeader(step.tx.en);
-
-                break;
-
-            // ---------------------------------------------
-            // BREATHING
-            // ---------------------------------------------
 
             case 'breath_auto':
-
-                this.ui_startBreathing(
-                    step.d,
-                    step.tx.en,
-                    step.inf?.en || ""
-                );
-
+                this.runBreathing(step);
                 break;
-
-            // ---------------------------------------------
-            // DECISION
-            // ---------------------------------------------
 
             case 'd':
-
-                this.ui_renderDecision(
-                    step.q.en,
-                    step.op,
-                    step.c,
-                    step.ex
-                );
-
+                this.renderDecision(step);
                 break;
-
-            // ---------------------------------------------
-            // SILENCE
-            // ---------------------------------------------
 
             case 'sil':
-
-                this.ui_startSilence(
-                    step.d,
-                    step.tx.en,
-                    step.inf?.en || ""
-                );
-
+                this.runSilence(step);
                 break;
-
-            // ---------------------------------------------
-            // RESULT
-            // ---------------------------------------------
 
             case 'r':
-
-                this.ui_showResult(
-                    step.tx,
-                    step.p || 0
-                );
-
-                break;
-
-            // ---------------------------------------------
-            // COMMENT
-            // ---------------------------------------------
-
-            case 'c':
-
-                this.ui_renderComment(step.tx.en);
-
-                break;
-
-            // ---------------------------------------------
-            // UNKNOWN
-            // ---------------------------------------------
-
-            default:
-
-                console.warn("UNKNOWN STEP:", step);
-
-                this.currentStepIndex++;
-
-                this.executeStep();
-
+                this.showResult(step);
                 break;
         }
     },
 
-    // =====================================================
-    // NEXT STEP
-    // =====================================================
+    // =========================
+    // 🎯 DECISION ENGINE (NO FREEZE)
+    // =========================
+    renderDecision(step) {
+        const container = document.getElementById("app");
 
-    nextStep() {
+        const start = performance.now();
 
-        this.currentStepIndex++;
-
-        this.executeStep();
-    },
-
-    // =====================================================
-    // TITLE SCREEN
-    // =====================================================
-
-    ui_renderTitle(title) {
-
-        const container = document.getElementById('app');
-
-        container.innerHTML = `
-            <div class="card center">
-
-                <h2 style="color:var(--primary);">
-                    ${title}
-                </h2>
-
-                <p style="color:var(--dim);">
-                    TACTICAL MODULE READY
-                </p>
-
-                <button id="beginMissionBtn">
-                    BEGIN MISSION
-                </button>
-
-            </div>
-        `;
-
-        document
-            .getElementById('beginMissionBtn')
-            .onclick = () => this.nextStep();
-    },
-
-    // =====================================================
-    // HEADER
-    // =====================================================
-
-    ui_renderHeader(text) {
-
-        const container = document.getElementById('app');
-
-        container.innerHTML = `
-            <div class="card center">
-
-                <h2>${text}</h2>
-
-                <button id="headerContinueBtn">
-                    CONTINUE
-                </button>
-
-            </div>
-        `;
-
-        document
-            .getElementById('headerContinueBtn')
-            .onclick = () => this.nextStep();
-    },
-
-    // =====================================================
-    // STORY
-    // =====================================================
-
-    ui_renderStory(text) {
-
-        const container = document.getElementById('app');
-
-        container.innerHTML = `
+        const html = `
             <div class="card">
+                <h3>ASSESSMENT</h3>
+                <p>${step.q.en}</p>
 
-                <h2 style="color:var(--primary);">
-                    TACTICAL KNOWLEDGE
-                </h2>
-
-                <p style="
-                    line-height:1.8;
-                    color:var(--text);
-                    text-align:left;
-                ">
-                    ${text}
-                </p>
-
-                <button id="storyContinueBtn">
-                    CONTINUE
-                </button>
-
-            </div>
-        `;
-
-        document
-            .getElementById('storyContinueBtn')
-            .onclick = () => this.nextStep();
-    },
-
-    // =====================================================
-    // DECISION
-    // =====================================================
-
-    ui_renderDecision(
-        question,
-        options,
-        correct,
-        explanations
-    ) {
-
-        const container = document.getElementById('app');
-
-        container.innerHTML = `
-            <div class="card">
-
-                <h3 style="color:var(--primary);">
-                    SITUATIONAL ASSESSMENT
-                </h3>
-
-                <p class="question">
-                    ${question}
-                </p>
-
-                <div class="options-grid">
-
-                    ${options.map((opt, i) => `
-                        <button
-                            class="btn-tactical"
-                            onclick="KamizenEngine.processDecision(
-                                ${i},
-                                ${correct},
-                                ${JSON.stringify(explanations)}
-                            )"
-                        >
+                <div>
+                    ${step.op.map((opt, i) => `
+                        <button onclick="KamizenEngine.processDecision(${i}, ${step.c}, '${step.ex[0]}')">
                             ${opt}
                         </button>
                     `).join('')}
-
                 </div>
-
             </div>
         `;
+
+        container.innerHTML = html;
+
+        this.currentStepStart = start;
     },
 
-    // =====================================================
-    // PROCESS DECISION
-    // =====================================================
+    processDecision(choice, correct, explanation) {
+        const latency = performance.now() - this.currentStepStart;
 
-    processDecision(
-        choiceIndex,
-        correctIndex,
-        explanation
-    ) {
+        const success = choice === correct;
 
-        if (choiceIndex === correctIndex) {
+        // 🔥 ADAPTIVE STRESS ENGINE
+        if (success) {
+            this.adaptiveState.successStreak++;
+            this.adaptiveState.failureCount = 0;
 
-            this.userStats.discipline += 10;
-
-            this.ui_notify(
-                "SUCCESS",
-                "PROTOCOL ADHERENCE CONFIRMED",
-                "success"
-            );
-
+            this.adaptiveState.difficultyMultiplier += 0.05;
+            this.telemetry.roeCompliance += 1;
         } else {
+            this.adaptiveState.failureCount++;
+            this.adaptiveState.successStreak = 0;
 
-            this.userStats.discipline -= 5;
+            this.adaptiveState.difficultyMultiplier -= 0.1;
+            this.adaptiveState.stressLevel += 1;
 
-            this.ui_notify(
-                "WARNING",
-                explanation[0] || "TACTICAL ERROR",
-                "error"
-            );
+            this.telemetry.hesitationIndex += 5;
         }
 
+        // 📡 TELEMETRY UPDATE
+        this.telemetry.reactionTime = latency;
+        this.telemetry.stressIndex =
+            this.adaptiveState.stressLevel * 10;
+
+        this.telemetry.cognitiveLoad =
+            Math.min(100,
+                this.adaptiveState.difficultyMultiplier * 30
+            );
+
+        this.logEvent("DECISION", {
+            choice,
+            success,
+            latency
+        });
+
+        // 🔁 AUTO ADVANCE (NO UI FREEZE)
         setTimeout(() => {
-            this.nextStep();
-        }, 2500);
+            this.currentStepIndex++;
+            this.executeStep();
+        }, 600);
     },
 
-    // =====================================================
-    // BREATHING
-    // =====================================================
+    // =========================
+    // 🫁 BREATHING SYSTEM
+    // =========================
+    runBreathing(step) {
+        let t = step.d;
+        const el = document.getElementById("app");
 
-    ui_startBreathing(
-        duration,
-        title,
-        info
-    ) {
+        const interval = setInterval(() => {
 
-        let timeLeft = duration;
-
-        const container = document.getElementById('app');
-
-        const renderBreath = () => {
-
-            const phase =
-                timeLeft % 8 < 4
-                    ? "INHALE"
-                    : "EXHALE";
-
-            container.innerHTML = `
-                <div class="card center">
-
-                    <h2 style="color:var(--primary);">
-                        ${title}
-                    </h2>
-
-                    <div class="breath-circle pulse">
-
-                        <div style="
-                            font-size:22px;
-                            font-weight:bold;
-                        ">
-                            ${phase}
-                        </div>
-
-                        <div style="
-                            margin-top:10px;
-                            font-size:30px;
-                        ">
-                            ${timeLeft}s
-                        </div>
-
-                    </div>
-
-                    <p style="color:var(--dim);">
-                        ${info}
-                    </p>
-
+            el.innerHTML = `
+                <div class="card">
+                    <h3>${step.tx.en}</h3>
+                    <p>${step.inf.en}</p>
+                    <h2>${t}s</h2>
                 </div>
             `;
-        };
 
-        renderBreath();
+            this.telemetry.focusStability =
+                Math.min(100,
+                    this.telemetry.focusStability + 0.5
+                );
 
-        this.timer = setInterval(() => {
-
-            timeLeft--;
-
-            renderBreath();
-
-            if (timeLeft <= 0) {
-
-                clearInterval(this.timer);
-
-                this.nextStep();
+            if (t-- <= 0) {
+                clearInterval(interval);
+                this.currentStepIndex++;
+                this.executeStep();
             }
 
         }, 1000);
     },
 
-    // =====================================================
-    // SILENCE MODE
-    // =====================================================
-
-    ui_startSilence(
-        duration,
-        title,
-        info
-    ) {
-
-        let timeLeft = duration;
-
-        const container = document.getElementById('app');
-
-        const renderSilence = () => {
-
-            container.innerHTML = `
-                <div class="card center">
-
-                    <h2>${title}</h2>
-
-                    <div class="breath-circle pulse">
-
-                        <div style="
-                            font-size:30px;
-                            font-weight:bold;
-                        ">
-                            ${timeLeft}s
-                        </div>
-
-                    </div>
-
-                    <p style="color:var(--dim);">
-                        ${info}
-                    </p>
-
-                </div>
-            `;
-        };
-
-        renderSilence();
-
-        this.timer = setInterval(() => {
-
-            timeLeft--;
-
-            renderSilence();
-
-            if (timeLeft <= 0) {
-
-                clearInterval(this.timer);
-
-                this.nextStep();
-            }
-
-        }, 1000);
-    },
-
-    // =====================================================
-    // RESULT
-    // =====================================================
-
-    ui_showResult(text, points) {
-
-        const container = document.getElementById('app');
-
-        container.innerHTML = `
-            <div class="card center">
-
-                <h1 style="color:var(--success);">
-                    ${text}
-                </h1>
-
-                <h2>
-                    +${points} XP
-                </h2>
-
-                <button id="continueResultBtn">
-                    CONTINUE
-                </button>
-
-            </div>
-        `;
-
-        document
-            .getElementById('continueResultBtn')
-            .onclick = () => this.nextStep();
-    },
-
-    // =====================================================
-    // COMMENT
-    // =====================================================
-
-    ui_renderComment(text) {
-
-        const container = document.getElementById('app');
-
-        container.innerHTML = `
-            <div class="card center">
-
-                <h2 style="color:var(--primary);">
-                    OPERATIONAL NOTE
-                </h2>
-
-                <p style="
-                    line-height:1.8;
-                ">
-                    ${text}
-                </p>
-
-                <button id="commentContinueBtn">
-                    CONTINUE
-                </button>
-
-            </div>
-        `;
-
-        document
-            .getElementById('commentContinueBtn')
-            .onclick = () => this.nextStep();
-    },
-
-    // =====================================================
-    // NOTIFICATIONS
-    // =====================================================
-
-    ui_notify(
-        title,
-        message,
-        type = 'success'
-    ) {
-
-        const color =
-            type === 'success'
-                ? '#00ff88'
-                : '#ff3e3e';
-
-        const notification =
-            document.createElement('div');
-
-        notification.style.position = 'fixed';
-        notification.style.bottom = '20px';
-        notification.style.right = '20px';
-        notification.style.padding = '15px';
-        notification.style.background = '#111';
-        notification.style.border =
-            `1px solid ${color}`;
-        notification.style.color = color;
-        notification.style.zIndex = '9999';
-        notification.style.maxWidth = '300px';
-
-        notification.innerHTML = `
-            <strong>${title}</strong>
-            <br>
-            ${message}
-        `;
-
-        document.body.appendChild(notification);
-
+    runSilence(step) {
         setTimeout(() => {
-
-            notification.remove();
-
-        }, 3000);
+            this.currentStepIndex++;
+            this.executeStep();
+        }, step.d * 1000);
     },
 
-    // =====================================================
-    // COMPLETE SYSTEM
-    // =====================================================
+    showResult(step) {
+        document.getElementById("app").innerHTML = `
+            <div class="card">
+                <h2>${step.tx}</h2>
+                <p>+${step.p} SCORE</p>
+            </div>
+        `;
+
+        this.logEvent("RESULT", step);
+    },
 
     completeMission() {
+        this.logEvent("MISSION_COMPLETE", this.telemetry);
 
-        const container = document.getElementById('app');
+        this.renderDashboard();
+    },
 
-        container.innerHTML = `
-            <div class="card center">
+    // =========================
+    // 📡 LIVE DASHBOARD (INSTRUCTOR VIEW)
+    // =========================
+    renderDashboard() {
 
-                <h1 style="color:var(--success);">
-                    ALL MISSIONS COMPLETE
-                </h1>
+        const panel = document.getElementById("dashboard") || this.createDashboard();
 
-                <p>
-                    OPERATOR STATUS:
-                    READY FOR VR DEPLOYMENT
-                </p>
+        panel.innerHTML = `
+            <div class="card">
+                <h3>INSTRUCTOR DASHBOARD</h3>
 
-                <h2>
-                    DISCIPLINE SCORE:
-                    ${this.userStats.discipline}
-                </h2>
+                <p>REACTION: ${this.telemetry.reactionTime.toFixed(0)} ms</p>
+                <p>STRESS: ${this.telemetry.stressIndex}</p>
+                <p>COGNITIVE LOAD: ${this.telemetry.cognitiveLoad.toFixed(1)}</p>
+                <p>ROE: ${this.telemetry.roeCompliance}</p>
+                <p>HESITATION: ${this.telemetry.hesitationIndex}</p>
+                <p>FOCUS: ${this.telemetry.focusStability.toFixed(1)}</p>
 
-                <button id="restartBtn">
-                    RESTART SYSTEM
-                </button>
+                <hr/>
 
+                <p>DYNAMIC DIFFICULTY: ${this.adaptiveState.difficultyMultiplier.toFixed(2)}</p>
+                <p>STRESS ENGINE: ${this.adaptiveState.stressLevel}</p>
             </div>
         `;
+    },
 
-        document
-            .getElementById('restartBtn')
-            .onclick = () => {
+    createDashboard() {
+        const div = document.createElement("div");
+        div.id = "dashboard";
+        document.body.appendChild(div);
+        return div;
+    },
 
-                this.currentMissionIndex = 0;
-                this.currentStepIndex = 0;
+    // =========================
+    // 📡 TELEMETRY LOOP
+    // =========================
+    startTelemetryLoop() {
+        setInterval(() => {
+            this.renderDashboard();
+        }, 1000);
+    },
 
-                this.startMission(1);
-            };
-
-        console.log(
-            "KAMIZEN TACTICAL SEQUENCE COMPLETE"
-        );
+    logEvent(type, data) {
+        this.sessionLog.push({
+            t: Date.now(),
+            type,
+            data
+        });
     }
 };
 
-// =========================================================
-// SYSTEM BOOT
-// =========================================================
-
-document.addEventListener(
-    'DOMContentLoaded',
-    () => {
-        KamizenEngine.init();
-    }
-);
+document.addEventListener("DOMContentLoaded", () => KamizenEngine.init());
