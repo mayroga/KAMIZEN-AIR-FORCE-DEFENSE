@@ -1,8 +1,8 @@
 /**
  * MAYKAMI NEURO-ENGINE - "AL CIELO"
- * Official Language: ENGLISH
- * Specialized in Tactical Neuro-Priming and Vagal Tone Stability.
- * Scientific Respiratory Cycle: 11 Seconds (5.5s Inhale / 5.5s Exhale).
+ * Specialized in Scientific Neuro-Priming & Tactical Synchronization.
+ * 11s Breathing Cycle: 5.5s Inhale / 5.5s Exhale.
+ * LANGUAGE: ENGLISH ONLY.
  */
 
 const MaykaMiEngine = {
@@ -30,12 +30,12 @@ const MaykaMiEngine = {
     voice: {
         synth: window.speechSynthesis,
         isSpeaking: false,
-        pitch: 0.9, 
+        pitch: 0.85, 
         rate: 0.85  
     },
 
     async init() {
-        console.log("MAYKAMI TERMINAL: ONLINE.");
+        console.log("MAYKAMI TERMINAL: READY.");
         try {
             const res = await fetch('/api/missions');
             this.missionData = await res.json();
@@ -44,7 +44,7 @@ const MaykaMiEngine = {
             this.renderModuleSelector();
             this.startTelemetryLoop();
             
-            this.speak("System initialized. Welcome to Mayka Mi Neurogame. Select your tactical domain to begin synchronization.");
+            this.speak("System initialized. Welcome to MaykaMi Neuro-Priming. Please select your tactical domain to begin synchronization.");
         } catch (e) {
             console.error("DATA ERROR:", e);
         }
@@ -63,15 +63,15 @@ const MaykaMiEngine = {
         const container = document.getElementById("app");
         let html = `
             <div class="card" style="max-width:850px;">
-                <h2 style="color:var(--primary); margin-bottom:5px;">NEURAL DOMAIN SELECTOR</h2>
-                <p style="font-size:10px; margin-bottom:20px; opacity:0.8;">OPERATOR ACCESS - 10 DOMAINS AVAILABLE</p>
+                <h2 style="color:var(--primary); margin-bottom:5px;">TACTICAL DOMAIN SELECTOR</h2>
+                <p style="font-size:10px; margin-bottom:20px; opacity:0.8;">OPERATOR ACCESS - 10 NEURAL DOMAINS AVAILABLE</p>
                 <div id="options-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
         `;
 
         this.missionData.missions.forEach((m, index) => {
             html += `
                 <button class="btn-tactical" style="text-align:left; font-size:11px;" onclick="MaykaMiEngine.startMissionByIndex(${index})">
-                    <span style="color:var(--primary)">[MOD ${index + 1}]</span> ${m.id}
+                    <span style="color:var(--primary)">[DOMAIN ${index + 1}]</span> ${m.id}
                     <span style="display:block; font-size:9px; color:var(--success); margin-top:4px;">FOCUS: ${this.getScientificFocus(index)}</span>
                 </button>
             `;
@@ -83,7 +83,7 @@ const MaykaMiEngine = {
 
     getScientificFocus(index) {
         const focuses = [
-            "COHERENCE & VAGAL TONE", "PREFRONTAL CORTEX STIM", "TACTICAL JUDGMENT ACCURACY",
+            "COHERENCE & VAGAL TONE", "PREFRONTAL CORTEX STIM", "ROE JUDGMENT ACCURACY",
             "MICRO-TREMOR SUPPRESSION", "SITUATIONAL LATENCY", "COGNITIVE LOAD SHIFTING",
             "MOTOR-NEURON STABILITY", "SYNAPTIC SYNCHRONIZATION", "VISUAL FIELD RETENTION",
             "EXECUTIVE DECISION EXCELLENCE"
@@ -128,14 +128,20 @@ const MaykaMiEngine = {
         this.speak(text);
     },
 
+    // ==========================================
+    // 🌬️ SCIENTIFIC BREATHING (Strict 11s Cycle)
+    // ==========================================
     runScientificBreathing(step) {
         let timeLeft = step.d; 
         const container = document.getElementById("app");
+        
+        // Voice synchronization: Initial instruction
         this.speak("Synchronize your breathing with the circle. Inhale as it expands, exhale as it contracts. Stabilize your vagal tone.");
 
         const interval = setInterval(() => {
-            const cyclePos = (step.d - timeLeft) % 11;
-            const isExhaling = cyclePos >= 5.5;
+            const cyclePos = timeLeft % 11;
+            // Precise 5.5s segments
+            const isExhaling = cyclePos < 5.5;
             const instruction = isExhaling ? "EXHALE" : "INHALE";
             
             container.innerHTML = `
@@ -144,12 +150,18 @@ const MaykaMiEngine = {
                     <div class="breath-container">
                         <div class="breath-circle breath-active"></div>
                         <div class="breath-instruction">
-                            <h2 style="margin:0;">${instruction}</h2>
-                            <p>${timeLeft}s</p>
+                            <h2 style="margin:0; font-size: 2.5em;">${instruction}</h2>
+                            <p style="color:var(--primary)">${timeLeft}s REMAINING</p>
                         </div>
                     </div>
                 </div>
             `;
+
+            // Audio cues for the cycle transitions
+            if (cyclePos === 10.5 || cyclePos === 5) {
+                this.speak(isExhaling ? "Inhale" : "Exhale");
+            }
+
             if (timeLeft-- <= 0) {
                 clearInterval(interval);
                 this.nextStep();
@@ -186,10 +198,10 @@ const MaykaMiEngine = {
         
         if (success) {
             this.adaptiveState.vagalTone += 2;
-            this.speak("Correct. Efficiency improved.");
+            this.speak("Protocol met. Tactical efficiency improved.");
         } else {
             this.adaptiveState.vagalTone -= 5;
-            this.speak("Protocol breach. Analyze latency.");
+            this.speak("Protocol breach. Analyze your hesitation index.");
         }
 
         const container = document.getElementById("app");
@@ -243,17 +255,21 @@ const MaykaMiEngine = {
                 <hr style="border-color:#333">
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
                     <div>
-                        <p style="font-size:10px;">PRE-TRAINING</p>
+                        <p style="font-size:10px;">PRE-SESSION</p>
                         <h3>BALANCE: ${this.telemetry.preSessionBalance.toFixed(1)}%</h3>
                     </div>
                     <div>
-                        <p style="font-size:10px;">POST-TRAINING</p>
+                        <p style="font-size:10px;">POST-SESSION</p>
                         <h3 style="color:var(--success)">READY: ${this.telemetry.postSessionReadiness.toFixed(1)}%</h3>
                     </div>
                 </div>
                 <hr style="border-color:#333">
                 <p><b>DECISION ACCURACY:</b> ${acc.toFixed(1)}%</p>
                 <p><b>NEURAL LATENCY:</b> ${this.telemetry.averageLatency.toFixed(3)}s</p>
+                <p style="font-size:11px; margin-top:15px;">
+                    <b>ADVISOR NOTE:</b> 10-minute priming complete. 
+                    Target Excellence Level achieved. Ready for deployment.
+                </p>
                 <button class="btn-tactical" style="width:100%" onclick="MaykaMiEngine.renderModuleSelector()">RESTART SYSTEM</button>
             </div>
         `;
