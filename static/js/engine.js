@@ -3,126 +3,129 @@ const KamizenEngine = {
     currentStepIndex: 0,
     missionData: null,
     currentStepStart: 0,
+    isTrainingActive: false,
 
-    // 🔥 ADAPTIVE CORE STATE
+    // 🔥 NEURO-ADAPTIVE STATE (Simulates VR input learning)
     adaptiveState: {
-        stressLevel: 1,
-        difficultyMultiplier: 1,
-        reactionBaseline: [],
-        failureCount: 0,
-        successStreak: 0
+        stressLevel: 1.0,
+        baselineJitter: 0.15,
+        cognitiveFatigue: 0,
+        excellenceThreshold: 95, // Required for "Excellence"
     },
 
-    // 📡 LIVE TELEMETRY BUFFER
+    // 📡 BIO-TELEMETRY (Pre-VR Simulated Sensors)
     telemetry: {
-        reactionTime: 0,
-        decisionLatency: 0,
-        stressIndex: 0,
-        cognitiveLoad: 0,
-        roeCompliance: 100,
-        hesitationIndex: 0,
-        focusStability: 100
+        preSessionBalance: 65,
+        liveFocus: 0,
+        postSessionReadiness: 0,
+        decisionAccuracy: [],
+        averageLatency: 0
     },
-
-    sessionLog: [],
 
     async init() {
-        console.log("ENGINE: INICIALIZANDO...");
         try {
-            // Corregido: El archivo está en la raíz, se accede vía API
             const res = await fetch('/api/missions');
             this.missionData = await res.json();
-            
-            console.log("ENGINE: DATOS CARGADOS", this.missionData);
-            this.updateHUD();
+            this.renderModuleSelector();
             this.startTelemetryLoop();
         } catch (e) {
-            console.error("ENGINE INIT FAILED", e);
-            document.getElementById("app").innerHTML = `<div class="card" style="color:red">ERROR DE CARGA: JSON NO ENCONTRADO</div>`;
+            console.error("CRITICAL: SYSTEM OFFLINE", e);
         }
     },
 
     // =========================
-    // 🚀 MISSION CONTROL
+    // 🎛️ SUPERVISOR CONTROL PANEL
     // =========================
-    startMission(id) {
-        console.log(`ENGINE: INICIANDO MISIÓN ${id}`);
-        if (!this.missionData) {
-            console.error("NO HAY DATOS DE MISIÓN");
-            return;
-        }
+    renderModuleSelector() {
+        const container = document.getElementById("app");
+        let html = `
+            <div class="card" style="max-width:800px">
+                <h2 style="color:var(--primary)">TACTICAL MODULE SELECTOR</h2>
+                <p style="font-size:11px; margin-bottom:20px;">SUPERVISOR ACCESS: SELECT TARGET COGNITIVE DOMAIN</p>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+        `;
 
-        this.currentMissionIndex = this.missionData.missions.findIndex(m => m.id === id);
+        this.missionData.missions.forEach((m, index) => {
+            html += `
+                <button class="btn-tactical" style="font-size:12px; text-align:left;" onclick="KamizenEngine.startMissionByIndex(${index})">
+                    MOD ${String(index + 1).padStart(2, '0')}: ${m.id} 
+                    <span style="display:block; font-size:9px; color:var(--success)">FOCUS: ${this.getScientificFocus(index)}</span>
+                </button>
+            `;
+        });
+
+        html += `</div></div>`;
+        container.innerHTML = html;
+    },
+
+    getScientificFocus(index) {
+        const focuses = [
+            "VAGAL TONE & RESPIRATORY CONTROL",
+            "PREFRONTAL CORTEX ACTIVATION",
+            "ROE AMBIGUITY RESOLUTION",
+            "STRESS-INDUCED JITTER MITIGATION",
+            "SITUATIONAL AWARENESS LATENCY",
+            "COGNITIVE LOAD SHIFTING",
+            "MOTOR-NEURON STABILIZATION",
+            "HEMISPHERIC SYNCHRONIZATION",
+            "PERIPHERAL VISION RETENTION",
+            "EXECUTIVE DECISION EXCELLENCE"
+        ];
+        return focuses[index] || "GENERAL TACTICAL PREP";
+    },
+
+    // =========================
+    // 🚀 TRAINING EXECUTION
+    // =========================
+    startMissionByIndex(index) {
+        this.currentMissionIndex = index;
         this.currentStepIndex = 0;
-        this.logEvent("MISSION_START", { id });
+        this.isTrainingActive = true;
+        this.telemetry.preSessionBalance = 60 + Math.random() * 10;
         this.executeStep();
     },
 
     executeStep() {
         const mission = this.missionData.missions[this.currentMissionIndex];
-        if (!mission) return;
-
         const step = mission.b[this.currentStepIndex];
-        console.log("ENGINE: EJECUTANDO PASO", step);
 
         if (!step) {
-            this.completeMission();
+            this.autoAdvanceOrComplete();
             return;
         }
 
         switch (step.t) {
-            case 'v': // Título / Texto
-                this.renderText(step.tx.en);
-                break;
-            case 'breath_auto':
-                this.runBreathing(step);
-                break;
-            case 'd': // Decisión
-                this.renderDecision(step);
-                break;
-            case 'sil': // Silencio / Pausa
-                this.runSilence(step);
-                break;
-            case 'r': // Resultado
-                this.showResult(step);
-                break;
-            default:
-                this.nextStep();
+            case 'v': this.renderPhaseInfo(step.tx.en); break;
+            case 'breath_auto': this.runBreathing(step); break;
+            case 'd': this.renderAssessment(step); break;
+            case 'r': this.showPhaseResult(step); break;
+            default: this.nextStep();
         }
     },
 
-    nextStep() {
-        this.currentStepIndex++;
-        this.executeStep();
-    },
-
-    // =========================
-    // 🎯 VISUAL RENDERING
-    // =========================
-    renderText(text) {
+    renderPhaseInfo(text) {
         const container = document.getElementById("app");
         container.innerHTML = `
             <div class="card">
-                <h2 class="blink" style="color:var(--primary)">SISTEMA ACTIVO</h2>
-                <p style="font-size:1.5em; letter-spacing:2px;">${text}</p>
-                <button class="btn-tactical" onclick="KamizenEngine.nextStep()">CONTINUAR</button>
+                <h3 style="color:var(--primary)">PHASE ${this.currentStepIndex + 1}</h3>
+                <p style="font-size:1.4em;">${text}</p>
+                <p style="font-size:0.8em; color:var(--success)">WORKING ON: ${this.getScientificFocus(this.currentMissionIndex)}</p>
+                <button class="btn-tactical" onclick="KamizenEngine.nextStep()">ENGAGE</button>
             </div>
         `;
     },
 
-    renderDecision(step) {
+    renderAssessment(step) {
         const container = document.getElementById("app");
         this.currentStepStart = performance.now();
-
         container.innerHTML = `
             <div class="card">
-                <h3 style="color:var(--primary)">TACTICAL ASSESSMENT</h3>
-                <p style="font-size:1.2em; margin-bottom:30px;">${step.q.en}</p>
+                <p style="color:var(--danger); font-size:10px;">LIVE DECISION ASSESSMENT</p>
+                <p style="font-size:1.2em;">${step.q.en}</p>
                 <div id="options-grid">
                     ${step.op.map((opt, i) => `
-                        <button class="btn-tactical" style="width:100%; margin:5px 0; text-align:left;" 
-                                onclick="KamizenEngine.processDecision(${i}, ${step.c}, '${step.ex ? step.ex[0] : ''}')">
-                            > ${opt}
+                        <button class="btn-tactical" onclick="KamizenEngine.processDecision(${i}, ${step.c})">
+                            ${opt}
                         </button>
                     `).join('')}
                 </div>
@@ -130,106 +133,91 @@ const KamizenEngine = {
         `;
     },
 
-    processDecision(choice, correct, explanation) {
-        const latency = performance.now() - this.currentStepStart;
-        const success = choice === correct;
+    processDecision(choice, correct) {
+        const latency = (performance.now() - this.currentStepStart) / 1000;
+        const isCorrect = choice === correct;
+        
+        this.telemetry.decisionAccuracy.push(isCorrect);
+        this.telemetry.averageLatency = (this.telemetry.averageLatency + latency) / 2;
 
-        // 🔥 ADAPTIVE STRESS LOGIC
-        if (success) {
-            this.adaptiveState.successStreak++;
-            this.telemetry.roeCompliance = Math.min(100, this.telemetry.roeCompliance + 2);
-        } else {
-            this.adaptiveState.failureCount++;
-            this.adaptiveState.stressLevel += 0.5;
-            this.telemetry.roeCompliance = Math.max(0, this.telemetry.roeCompliance - 10);
-            this.telemetry.hesitationIndex += 5;
-        }
-
-        this.telemetry.reactionTime = latency;
-        this.telemetry.cognitiveLoad = Math.min(100, (latency / 100) * this.adaptiveState.stressLevel);
-
-        this.logEvent("DECISION", { success, latency });
-
-        // Feedback rápido y siguiente
         const container = document.getElementById("app");
         container.innerHTML = `
             <div class="card">
-                <h2 style="color:${success ? 'var(--success)' : 'var(--danger)'}">
-                    ${success ? 'ACEPTABLE' : 'CRÍTICO'}
+                <h2 style="color:${isCorrect ? 'var(--success)' : 'var(--danger)'}">
+                    ${isCorrect ? 'TARGET NEUTRALIZED' : 'PROTOCOL VIOLATION'}
                 </h2>
-                <p>${explanation || ''}</p>
+                <p>LATENCY: ${latency.toFixed(2)}s</p>
             </div>
         `;
-
-        setTimeout(() => this.nextStep(), 1500);
+        setTimeout(() => this.nextStep(), 1200);
     },
 
     runBreathing(step) {
         let t = step.d;
         const el = document.getElementById("app");
-        
         const interval = setInterval(() => {
             el.innerHTML = `
                 <div class="card">
-                    <h3 style="color:var(--primary)">${step.tx.en}</h3>
-                    <div class="breath-circle pulse">
-                        <h2 style="font-size:3em; margin:0;">${t}s</h2>
+                    <h3 style="color:var(--primary)">COHERECE TRAINING</h3>
+                    <div class="breath-circle pulse" style="border-width:${4 + (Math.random()*2)}px">
+                        <h2>${t}s</h2>
                     </div>
-                    <p style="font-size:0.8em; opacity:0.7;">MANTÉN EL ENFOQUE TÁCTICO</p>
+                    <p>STABILIZING VAGAL TONE...</p>
                 </div>
             `;
-            
-            if (t-- <= 0) {
-                clearInterval(interval);
-                this.nextStep();
-            }
+            if (t-- <= 0) { clearInterval(interval); this.nextStep(); }
         }, 1000);
     },
 
-    runSilence(step) {
-        document.getElementById("app").innerHTML = `<div class="card"><p class="blink">PROCESANDO...</p></div>`;
-        setTimeout(() => this.nextStep(), step.d * 1000);
+    nextStep() {
+        this.currentStepIndex++;
+        this.executeStep();
     },
 
-    showResult(step) {
+    autoAdvanceOrComplete() {
+        // Logica de progresión automática (1 -> 10 -> 1)
+        this.currentMissionIndex++;
+        if (this.currentMissionIndex >= this.missionData.missions.length) {
+            this.currentMissionIndex = 0;
+            this.renderFinalReport();
+        } else {
+            this.currentStepIndex = 0;
+            this.executeStep();
+        }
+    },
+
+    renderFinalReport() {
+        const acc = (this.telemetry.decisionAccuracy.filter(x => x).length / this.telemetry.decisionAccuracy.length) * 100;
+        this.telemetry.postSessionReadiness = acc - (this.telemetry.averageLatency * 5);
+
         document.getElementById("app").innerHTML = `
-            <div class="card">
-                <h2 style="color:var(--success)">MISIÓN COMPLETADA</h2>
-                <p>PUNTUACIÓN DE ASESORÍA: +${step.p}</p>
-                <button class="btn-tactical" onclick="location.reload()">REINICIAR TERMINAL</button>
+            <div class="card" style="text-align:left">
+                <h2 style="color:var(--primary); text-align:center;">TACTICAL READINESS REPORT</h2>
+                <hr style="border:0; border-top:1px solid #333">
+                <p><b>PRE-SESSION BALANCE:</b> ${this.telemetry.preSessionBalance.toFixed(1)}%</p>
+                <p><b>DECISION ACCURACY:</b> ${acc.toFixed(1)}%</p>
+                <p><b>AVG RESPONSE TIME:</b> ${this.telemetry.averageLatency.toFixed(2)}s</p>
+                <p><b>POST-SESSION READINESS:</b> <span style="color:var(--success)">${this.telemetry.postSessionReadiness.toFixed(1)}%</span></p>
+                <hr style="border:0; border-top:1px solid #333">
+                <p style="font-size:12px;"><b>SPECIALIST ANALYSIS:</b> Client has achieved 
+                ${acc > 90 ? 'OPTIMAL EXCELLENCE. Ready for High-Stress VR Combat.' : 'MARGINAL STABILITY. Recommend Module 04 re-training.'}</p>
+                <button class="btn-tactical" style="width:100%" onclick="KamizenEngine.renderModuleSelector()">RETURN TO HUD</button>
             </div>
         `;
-        this.logEvent("RESULT", step);
-    },
-
-    completeMission() {
-        this.showResult({ p: this.telemetry.roeCompliance, tx: "FINALIZADO" });
-    },
-
-    // =========================
-    // 📡 TELEMETRY LOOP
-    // =========================
-    updateHUD() {
-        if (window.updateHUD) {
-            window.updateHUD({
-                pulseSim: 60 + (this.adaptiveState.stressLevel * 10),
-                microTremor: this.telemetry.hesitationIndex,
-                roeCompliance: this.telemetry.roeCompliance,
-                cognitiveLoad: this.telemetry.cognitiveLoad
-            });
-        }
     },
 
     startTelemetryLoop() {
         setInterval(() => {
-            this.updateHUD();
-            // Simular jitter de sistema
-            this.telemetry.focusStability = Math.max(0, 100 - (Math.random() * 5));
-        }, 1000);
-    },
-
-    logEvent(type, data) {
-        this.sessionLog.push({ t: Date.now(), type, data });
+            if (window.updateHUD) {
+                window.updateHUD({
+                    pulseSim: 65 + (Math.random() * 15),
+                    microTremor: this.telemetry.averageLatency * 10,
+                    roeCompliance: this.telemetry.decisionAccuracy.length > 0 ? 
+                        (this.telemetry.decisionAccuracy.filter(x => x).length / this.telemetry.decisionAccuracy.length) * 100 : 100,
+                    cognitiveLoad: 40 + (Math.random() * 20)
+                });
+            }
+        }, 2000);
     }
 };
 
