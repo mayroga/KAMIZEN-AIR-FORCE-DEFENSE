@@ -25,7 +25,7 @@
       "focus": "VAGAL TONE & RESPIRATORY CONTROL",
       "b": [
         { "t": "v", "tx": { "en": "MISSION 1: NEURO BASELINE CALIBRATION. PREPARING TACTICAL VAGAL SYNC." } },
-        { "t": "breath_auto", "d": 33, "tx": { "en": "TACTICAL RESONANCE: 5.5s CYCLES" }, "inf": { "en": "Establish autonomic nervous system equilibrium for high-stakes engagement." } },
+        { "t": "breath_auto", "d": 44, "tx": { "en": "TACTICAL RESONANCE: 5.5s CYCLES" }, "inf": { "en": "Establish autonomic nervous system equilibrium for high-stakes engagement." } },
         { "t": "r", "tx": { "en": "PHYSIOLOGICAL BASELINE LOCKED. OPERATOR PRIMED." }, "p": 100 }
       ]
     },
@@ -65,7 +65,7 @@
       "focus": "STRESS-INDUCED JITTER MITIGATION",
       "b": [
         { "t": "v", "tx": { "en": "MISSION 4: ROE DECISION LOGIC. PROTOCOL OVER INSTINCT." } },
-        { "t": "breath_auto", "d": 22, "tx": { "en": "COHERENCE BREATHING" } },
+        { "t": "breath_auto", "d": 33, "tx": { "en": "COHERENCE BREATHING" } },
         { 
           "t": "d", "q": { "en": "UNKNOWN SUBJECT WITH DRAWN WEAPON IN SECURE SECTOR. STATUS?" },
           "op": ["WAIT FOR SPEECH", "CHALLENGE AND PREPARE TO ENGAGE", "RETREAT FOR COVER", "IGNORE"],
@@ -121,7 +121,7 @@
       "focus": "HEMISPHERIC SYNCHRONIZATION",
       "b": [
         { "t": "v", "tx": { "en": "MISSION 8: SCENARIO BRANCHING. COMPLEX THREAT PRIORITIZATION." } },
-        { "t": "breath_auto", "d": 25, "tx": { "en": "CROSS-LATERAL NEURAL SYNC" } },
+        { "t": "breath_auto", "d": 22, "tx": { "en": "CROSS-LATERAL NEURAL SYNC" } },
         { 
           "t": "d", "q": { "en": "MULTIPLE SIGNALS: IED ALERT (NORTH) AND DIRECT FIRE (SOUTH). PRIORITIZE?" },
           "op": ["NEUTRALIZE FIRE", "EVACUATE NORTH", "SPLIT SQUAD", "SUPPRESS FIRE / FLANK"],
