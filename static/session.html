@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>KAMIZEN TACTICAL - NEURO-SYNCHRONIZER</title>
+    <title>MAYKAMI - NEURO-SYNCHRONIZER</title>
     <style>
         :root {
             --bg: #020406;
@@ -72,7 +72,7 @@
             box-shadow: 0 0 50px rgba(0, 212, 255, 0.05);
         }
 
-        /* --- CIRCULO RESPIRATORIO CIENTÍFICO --- */
+        /* --- CIRCULO DE RESPIRACIÓN REGULADA --- */
         .breath-container {
             position: relative;
             width: 300px;
@@ -92,7 +92,7 @@
             opacity: 0.5;
         }
 
-        /* Animación regulada: 5.5s Inhala, 5.5s Exhala (Ciclo de 11s) */
+        /* Ciclo de 11 segundos: 5.5s Inhala / 5.5s Exhala */
         .breath-active {
             animation: breathe-cycle 11s infinite ease-in-out;
         }
@@ -139,6 +139,15 @@
 
         .status-active { color: var(--success); animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
+
+        /* Estilo para los botones de traducción */
+        .lang-switch {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
@@ -146,29 +155,34 @@
 
     <div id="hud-container">
         <div class="top-bar">
-            <div>UNIT: 736-SFS-OPERATOR</div>
+            <div>MAYKAMI OPERATOR: SESSION_01</div>
             <div class="status-active">● NEURO-LINK: ONLINE</div>
             <div id="clock">00:00:00</div>
         </div>
 
         <div id="app">
-            <!-- El contenido será inyectado por engine.js -->
             <div class="card">
-                <h1 style="color:var(--primary)">KAMIZEN AI SYSTEM</h1>
-                <p>Initializing Scientific Neuro-Priming Protocols...</p>
-                <button class="btn-tactical" onclick="KamizenEngine.init()">LOAD MISSION DATA</button>
+                <h1 style="color:var(--primary)">MAYKAMI NEUROGAME</h1>
+                <p>Iniciando Protocolos de Sincronización Cerebral...</p>
+                <button class="btn-tactical" onclick="MaykaMiEngine.init()">CARGAR SESIÓN</button>
             </div>
         </div>
 
         <div id="dashboard">
-            <p style="border-bottom: 1px solid #333; padding-bottom:5px; margin-bottom:10px;">BIO-SENSORS (PRE-VR)</p>
+            <p style="border-bottom: 1px solid #333; padding-bottom:5px; margin-bottom:10px;">BIO-MÉTRICAS (TIEMPO REAL)</p>
             <div id="telemetry-content">
-                HRV: INITIALIZING...<br>
-                STRESS: CALIBRATING...<br>
-                ROE: 100%<br>
-                JITTER: 0.00
+                HRV: INICIALIZANDO...<br>
+                TENSIÓN: CALIBRANDO...<br>
+                ESTABILIDAD: 100%<br>
+                MICRO-TREMOR: 0.00
             </div>
         </div>
+    </div>
+
+    <!-- Traducción Inglés/Español -->
+    <div class="lang-switch">
+        <button class="btn-tactical" style="padding: 5px 10px; font-size: 10px;" onclick="translateTo('ES')">ES</button>
+        <button class="btn-tactical" style="padding: 5px 10px; font-size: 10px;" onclick="translateTo('EN')">EN</button>
     </div>
 
     <!-- SCRIPTS -->
@@ -179,15 +193,20 @@
         }
         setInterval(updateClock, 1000);
 
-        // Interfaz de telemetría para engine.js
+        // Actualización de HUD desde el motor lógico
         window.updateHUD = function(data) {
             document.getElementById('telemetry-content').innerHTML = `
-                HRV STABILITY: ${data.pulseSim || 0}%<br>
-                VAGAL TONE: ${data.cognitiveLoad || 0}<br>
-                ROE COMPLIANCE: ${data.roeCompliance || 100}%<br>
+                ESTABILIDAD HRV: ${data.pulseSim || 0}%<br>
+                TONO VAGAL: ${data.cognitiveLoad || 0}<br>
+                CUMPLIMIENTO: ${data.roeCompliance || 100}%<br>
                 MICRO-TREMOR: ${data.microTremor ? data.microTremor.toFixed(3) : 0}
             `;
         };
+
+        function translateTo(lang) {
+            console.log("Cambiando idioma a: " + lang);
+            // Aquí se integraría la lógica para cambiar el contenido de la sesión
+        }
     </script>
 </body>
 </html>
