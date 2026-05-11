@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>MAYKAMI - NEURO-SYNCHRONIZER</title>
+    <title>MAYKAMI TACTICAL - NEURO-SYNCHRONIZER</title>
     <style>
         :root {
             --bg: #020406;
@@ -16,7 +16,7 @@
         * { box-sizing: border-box; cursor: crosshair; }
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: var(--bg);
             color: var(--text);
             display: flex;
@@ -59,6 +59,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            transition: all 0.5s ease;
         }
 
         .card {
@@ -66,13 +67,13 @@
             border: var(--border);
             padding: 40px;
             width: 100%;
-            max-width: 700px;
+            max-width: 750px;
             text-align: center;
             position: relative;
             box-shadow: 0 0 50px rgba(0, 212, 255, 0.05);
         }
 
-        /* --- CIRCULO DE RESPIRACIÓN REGULADA --- */
+        /* --- SCIENTIFIC BREATHING CIRCLE --- */
         .breath-container {
             position: relative;
             width: 300px;
@@ -87,19 +88,19 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            border: 2px solid var(--primary);
+            border: 3px solid var(--primary);
             border-radius: 50%;
             opacity: 0.5;
         }
 
-        /* Ciclo de 11 segundos: 5.5s Inhala / 5.5s Exhala */
+        /* Regulated Animation: 5.5s Inhale, 5.5s Exhale (11s Cycle) */
         .breath-active {
             animation: breathe-cycle 11s infinite ease-in-out;
         }
 
         @keyframes breathe-cycle {
             0%, 100% { transform: scale(0.4); opacity: 0.2; border-color: var(--primary); }
-            50% { transform: scale(1.1); opacity: 1; border-color: var(--success); box-shadow: 0 0 30px var(--success); }
+            50% { transform: scale(1.2); opacity: 1; border-color: var(--success); box-shadow: 0 0 40px var(--success); }
         }
 
         .breath-instruction {
@@ -110,9 +111,9 @@
             z-index: 10;
         }
 
-        /* --- BOTONES TÁCTICOS --- */
+        /* --- TACTICAL INTERFACE --- */
         .btn-tactical {
-            background: transparent;
+            background: rgba(0, 212, 255, 0.05);
             border: 1px solid var(--primary);
             color: var(--primary);
             padding: 15px 30px;
@@ -121,33 +122,39 @@
             letter-spacing: 2px;
             cursor: pointer;
             transition: 0.3s;
-            margin: 5px;
+            margin: 8px;
+            text-transform: uppercase;
         }
-        .btn-tactical:hover { background: var(--primary); color: var(--bg); }
+        .btn-tactical:hover { 
+            background: var(--primary); 
+            color: var(--bg); 
+            box-shadow: 0 0 20px var(--primary);
+        }
 
         #dashboard {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 280px;
+            width: 300px;
             background: rgba(2, 4, 6, 0.95);
             border: var(--border);
             padding: 15px;
             font-size: 11px;
             border-left: 4px solid var(--primary);
+            z-index: 100;
         }
 
-        .status-active { color: var(--success); animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* Estilo para los botones de traducción */
-        .lang-switch {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            display: flex;
-            gap: 10px;
+        #options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
         }
+
+        .status-active { color: var(--success); animation: blink 1.5s infinite; }
+        @keyframes blink { 50% { opacity: 0.3; } }
+        
+        hr { border: 0; border-top: 1px solid #333; margin: 15px 0; }
     </style>
 </head>
 <body>
@@ -155,58 +162,54 @@
 
     <div id="hud-container">
         <div class="top-bar">
-            <div>MAYKAMI OPERATOR: SESSION_01</div>
-            <div class="status-active">● NEURO-LINK: ONLINE</div>
+            <div>OPERATOR: MAYKAMI-TACTICAL-CORE</div>
+            <div class="status-active">● NEURAL-LINK: STABLE</div>
             <div id="clock">00:00:00</div>
         </div>
 
         <div id="app">
+            <!-- Initial content before Engine takes over -->
             <div class="card">
-                <h1 style="color:var(--primary)">MAYKAMI NEUROGAME</h1>
-                <p>Iniciando Protocolos de Sincronización Cerebral...</p>
-                <button class="btn-tactical" onclick="MaykaMiEngine.init()">CARGAR SESIÓN</button>
+                <h1 style="color:var(--primary); margin-bottom: 10px;">MAYKAMI NEURO-ENGINE</h1>
+                <p style="opacity: 0.7; font-size: 0.9em;">System Ready for Tactical Synchronization</p>
+                <hr>
+                <button class="btn-tactical" onclick="MaykaMiEngine.init()">INITIALIZE PROTOCOLS</button>
             </div>
         </div>
 
         <div id="dashboard">
-            <p style="border-bottom: 1px solid #333; padding-bottom:5px; margin-bottom:10px;">BIO-MÉTRICAS (TIEMPO REAL)</p>
+            <p style="border-bottom: 1px solid #333; padding-bottom:5px; margin-bottom:10px; color: var(--primary);">NEURAL TELEMETRY</p>
             <div id="telemetry-content">
-                HRV: INICIALIZANDO...<br>
-                TENSIÓN: CALIBRANDO...<br>
-                ESTABILIDAD: 100%<br>
-                MICRO-TREMOR: 0.00
+                HRV STABILITY: CALIBRATING...<br>
+                VAGAL TONE: SCANNING...<br>
+                ROE COMPLIANCE: 100%<br>
+                MICRO-TREMOR: 0.000
             </div>
         </div>
     </div>
 
-    <!-- Traducción Inglés/Español -->
-    <div class="lang-switch">
-        <button class="btn-tactical" style="padding: 5px 10px; font-size: 10px;" onclick="translateTo('ES')">ES</button>
-        <button class="btn-tactical" style="padding: 5px 10px; font-size: 10px;" onclick="translateTo('EN')">EN</button>
-    </div>
-
-    <!-- SCRIPTS -->
+    <!-- CORE ENGINE -->
     <script src="/static/js/engine.js"></script>
     <script>
+        // Real-time HUD Clock
         function updateClock() {
             document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0];
         }
         setInterval(updateClock, 1000);
+        updateClock();
 
-        // Actualización de HUD desde el motor lógico
+        // Interface Bridge for engine.js Telemetry
         window.updateHUD = function(data) {
-            document.getElementById('telemetry-content').innerHTML = `
-                ESTABILIDAD HRV: ${data.pulseSim || 0}%<br>
-                TONO VAGAL: ${data.cognitiveLoad || 0}<br>
-                CUMPLIMIENTO: ${data.roeCompliance || 100}%<br>
-                MICRO-TREMOR: ${data.microTremor ? data.microTremor.toFixed(3) : 0}
-            `;
+            const telemetry = document.getElementById('telemetry-content');
+            if (telemetry) {
+                telemetry.innerHTML = `
+                    HRV STABILITY: ${data.pulseSim || 0}%<br>
+                    VAGAL TONE: ${data.cognitiveLoad || 0}<br>
+                    ROE COMPLIANCE: ${data.roeCompliance || 100}%<br>
+                    MICRO-TREMOR: ${data.microTremor ? parseFloat(data.microTremor).toFixed(3) : "0.000"}
+                `;
+            }
         };
-
-        function translateTo(lang) {
-            console.log("Cambiando idioma a: " + lang);
-            // Aquí se integraría la lógica para cambiar el contenido de la sesión
-        }
     </script>
 </body>
 </html>
