@@ -3,33 +3,32 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>KAMIZEN TACTICAL - MISSION INTERFACE</title>
+    <title>KAMIZEN TACTICAL - HUD v2.5</title>
     <style>
-        :root{
-            --bg:#05070a; 
-            --card:#0d1117;
-            --primary:#00d4ff; 
-            --success:#00ff88; 
-            --danger:#ff3e3e;
-            --text:#e6edf3;
-            --dim:#7d8590;
+        :root {
+            --bg: #020406;
+            --card: #0d1117;
+            --primary: #00d4ff;
+            --success: #00ff88;
+            --danger: #ff3e3e;
+            --text: #e6edf3;
             --border: 1px solid #30363d;
         }
-        *{ box-sizing:border-box; cursor: crosshair; }
-        body{
-            margin:0;
+        * { box-sizing: border-box; cursor: crosshair; }
+        body {
+            margin: 0;
             font-family: 'Courier New', Courier, monospace;
-            background:var(--bg);
-            color:var(--text);
-            display:flex;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
             flex-direction: column;
-            align-items:center;
-            min-height:100vh;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
             text-transform: uppercase;
-            overflow-x: hidden;
         }
-        
-        /* Capa de Escaneo Visual */
+
+        /* Scanline Effect */
         .scanline {
             width: 100%; height: 2px; background: rgba(0, 212, 255, 0.05);
             position: fixed; top: 0; z-index: 999; pointer-events: none;
@@ -37,179 +36,167 @@
         }
         @keyframes scan { from { top: 0; } to { top: 100vh; } }
 
-        #main-container {
+        #hud-container {
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
+            height: 100vh;
             padding: 20px;
-            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        /* HUD Header */
-        .status-bar {
-            display: flex; justify-content: space-between; font-size: 10px; color: var(--primary);
-            margin-bottom: 20px; border-bottom: var(--border); padding-bottom: 10px;
-            letter-spacing: 1px;
+        /* Top Bar */
+        .top-bar {
+            display: flex; justify-content: space-between;
+            font-size: 12px; color: var(--primary);
+            border-bottom: var(--border);
+            padding-bottom: 10px;
+            letter-spacing: 2px;
         }
 
-        /* Contenedor Dinámico de Misiones */
+        /* Main Content Area */
         #app {
-            min-height: 400px;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
         .card {
-            background: var(--card);
-            padding: 30px;
-            border-radius: 2px;
-            margin: 15px 0;
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.05);
+            background: rgba(13, 17, 23, 0.8);
             border: var(--border);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
             position: relative;
-            transition: all 0.3s ease;
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.1);
         }
         .card::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 15px; height: 15px;
+            content: ""; position: absolute; top: -2px; left: -2px; width: 20px; height: 20px;
             border-top: 3px solid var(--primary); border-left: 3px solid var(--primary);
         }
-        .card.success-border { border-color: var(--success); }
-        
-        /* Botones Tácticos */
-        #options-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
 
-        button {
-            width: 100%;
-            padding: 20px;
-            border: 1px solid var(--primary);
-            background: rgba(0, 212, 255, 0.03);
-            color: var(--primary);
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        button:hover {
-            background: var(--primary);
-            color: var(--bg);
-            box-shadow: 0 0 20px var(--primary);
-        }
-        button:active { transform: scale(0.98); }
-
-        /* Biometría / Respiración */
+        /* Biometric Circle */
         .breath-circle {
-            width: 200px; height: 200px;
+            width: 220px; height: 220px;
             border-radius: 50%;
-            margin: 40px auto;
-            border: 2px solid var(--primary);
+            margin: 20px auto;
+            border: 1px solid var(--primary);
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             position: relative;
         }
         .pulse { animation: pulse-animation 4s infinite ease-in-out; }
         @keyframes pulse-animation {
-            0% { transform: scale(1); opacity: 0.3; border-width: 2px; }
-            50% { transform: scale(1.2); opacity: 1; border-width: 6px; box-shadow: 0 0 50px var(--primary); }
-            100% { transform: scale(1); opacity: 0.3; border-width: 2px; }
+            0%, 100% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
+            50% { transform: scale(1.1); box-shadow: 0 0 40px var(--primary); border-width: 4px; }
         }
 
-        /* Instructor Live Dashboard (Floating) */
+        /* Buttons */
+        .btn-tactical {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 15px 30px;
+            font-family: inherit;
+            font-weight: bold;
+            letter-spacing: 3px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .btn-tactical:hover { background: var(--primary); color: var(--bg); box-shadow: 0 0 20px var(--primary); }
+
+        /* Floating Telemetry Panel */
         #dashboard {
-            background: rgba(13, 17, 23, 0.9);
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 250px;
+            background: rgba(2, 4, 6, 0.9);
             border: var(--border);
             padding: 15px;
-            pointer-events: none;
-            z-index: 100;
+            font-size: 10px;
             border-left: 4px solid var(--primary);
         }
 
-        .center { text-align: center; }
-        .dim { color: var(--dim); }
-        .blink { animation: blinker 1.5s linear infinite; }
+        .blink { animation: blinker 1s linear infinite; }
         @keyframes blinker { 50% { opacity: 0; } }
 
-        /* Estilo para el reporte PDF final */
-        .pdf-btn {
-            background: var(--success) !important;
-            color: var(--bg) !important;
-            border-color: var(--success) !important;
-            margin-top: 20px;
+        #options-grid {
+            display: grid; gap: 10px; width: 100%; margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="scanline"></div>
 
-    <div id="main-container">
-        <!-- HEADER TÁCTICO -->
-        <div class="status-bar">
-            <div>UNIT: <span id="op-id">736-SFS-OPERATOR</span></div>
-            <div class="blink">● ENCRYPTION: AES-256-ACTIVE</div>
-            <div id="sys-clock">00:00:00</div>
+    <div id="hud-container">
+        <div class="top-bar">
+            <div>[ UNIT: 736-SFS-OP ]</div>
+            <div class="blink" style="color:var(--success)">● NEURO-LINK: ACTIVE</div>
+            <div id="clock">00:00:00</div>
         </div>
 
-        <!-- ÁREA CENTRAL DE MISIÓN (Controlada por engine.js) -->
         <div id="app">
-            <div class="card center">
-                <h2 style="color:var(--primary);">INITIALIZING NEURO-LINK</h2>
-                <p class="dim">Sincronizando protocolos de asesoría...</p>
+            <!-- PANTALLA INICIAL DE CALIBRACIÓN -->
+            <div class="card" id="init-card">
+                <h2 style="color:var(--primary); margin:0;">SYSTEM READINESS</h2>
+                <p style="color:var(--dim); font-size:12px;">Sincronización de Sensores Biométricos Virtuales</p>
+                
                 <div class="breath-circle pulse">
-                    <span style="font-size: 10px;">WAITING</span>
+                    <span style="font-size:10px;">AWAITING COMMAND</span>
                 </div>
-                <button onclick="KamizenEngine.startMission(1)">INICIAR CALIBRACIÓN BASE</button>
+
+                <button class="btn-tactical" onclick="startSystem()">INICIAR MISIÓN 01</button>
             </div>
         </div>
 
-        <!-- CONTROLES OCULTOS DE ADMINISTRADOR -->
-        <div id="admin-controls" class="card" style="display:none; border-color: var(--danger);">
-            <p style="color:var(--danger); font-size: 10px;">INSTRUCTOR OVERRIDE</p>
-            <input id="missionInput" type="number" placeholder="MISSION ID" 
-                   style="width:100%;padding:12px;border:1px solid #30363d; background:#000; color:var(--primary); margin-bottom:10px;">
-            <button onclick="jumpToMissionManual()" style="border-color:var(--dim); color:var(--dim);">FORCE JUMP</button>
+        <!-- DASHBOARD DE TELEMETRÍA (ACTUALIZADO POR ENGINE.JS) -->
+        <div id="dashboard">
+            <p style="margin:0 0 10px 0; border-bottom:1px solid #333; padding-bottom:5px;">LIVE TELEMETRY</p>
+            <div id="telemetry-content">
+                CONEXIÓN: ESTABLE<br>
+                CARGA COGNITIVA: 0%<br>
+                ESTRÉS: NOMINAL<br>
+                JITTER: 0.0ms
+            </div>
         </div>
     </div>
-
-    <!-- EL DASHBOARD SE CREA DINÁMICAMENTE POR EL ENGINE.JS -->
 
     <!-- SCRIPTS -->
     <script src="/static/js/engine.js"></script>
     <script>
-        // Reloj en tiempo real para el HUD
+        // Reloj del Sistema
         function updateClock() {
             const now = new Date();
-            document.getElementById('sys-clock').innerText = now.toTimeString().split(' ')[0];
+            document.getElementById('clock').innerText = now.toTimeString().split(' ')[0];
         }
         setInterval(updateClock, 1000);
 
-        // Atajo para Instructor (Triple clic en el ID de operador)
-        let clicks = 0;
-        document.getElementById('op-id').addEventListener('click', () => {
-            clicks++;
-            if (clicks === 3) {
-                document.getElementById('admin-controls').style.display = 'block';
-                clicks = 0;
-            }
-        });
-
-        function jumpToMissionManual() {
-            const input = document.getElementById("missionInput");
-            const id = Number(input.value);
-            if (typeof KamizenEngine !== "undefined") {
-                KamizenEngine.startMission(id);
+        // Iniciar el motor
+        function startSystem() {
+            if (typeof KamizenEngine !== 'undefined') {
+                document.getElementById('init-card').style.display = 'none';
+                KamizenEngine.startMission(1);
+            } else {
+                alert("ERROR: ENGINE.JS NO DETECTADO");
             }
         }
 
-        // Intercepción de descarga de PDF desde el engine
-        async function triggerDownload(reportId) {
-            window.location.href = `/api/download-report/${reportId}`;
+        // Esta función será llamada por engine.js para actualizar el HUD
+        window.updateHUD = function(data) {
+            const content = document.getElementById('telemetry-content');
+            content.innerHTML = `
+                HEART RATE: ${data.pulseSim || 72} BPM<br>
+                JITTER: ${data.microTremor ? data.microTremor.toFixed(2) : 0}%<br>
+                ROE COMPLIANCE: ${data.roeCompliance || 100}%<br>
+                COG. LOAD: ${data.cognitiveLoad ? data.cognitiveLoad.toFixed(1) : 0}%
+            `;
         }
     </script>
 </body>
