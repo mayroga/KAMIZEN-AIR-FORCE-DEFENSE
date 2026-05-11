@@ -61,6 +61,8 @@ const MaykaMiEngine = {
 
     renderModuleSelector() {
         const container = document.getElementById("app");
+        if (!container) return;
+        
         let html = `
             <div class="card" style="max-width:850px;">
                 <h2 style="color:var(--primary); margin-bottom:5px;">TACTICAL DOMAIN SELECTOR</h2>
@@ -71,7 +73,7 @@ const MaykaMiEngine = {
         this.missionData.missions.forEach((m, index) => {
             html += `
                 <button class="btn-tactical" style="text-align:left; font-size:11px;" onclick="MaykaMiEngine.startMissionByIndex(${index})">
-                    <span style="color:var(--primary)">[DOMAIN ${index + 1}]</span> ${m.id}
+                    <span style="color:var(--primary)">[DOMAIN ${index + 1}]</span> ${m.cat || m.focus}
                     <span style="display:block; font-size:9px; color:var(--success); margin-top:4px;">FOCUS: ${this.getScientificFocus(index)}</span>
                 </button>
             `;
@@ -135,22 +137,23 @@ const MaykaMiEngine = {
         let timeLeft = step.d; 
         const container = document.getElementById("app");
         
-        // Voice synchronization: Initial instruction
-        this.speak("Synchronize your breathing with the circle. Inhale as it expands, exhale as it contracts. Stabilize your vagal tone.");
+        this.speak("Synchronize your breathing with the circle. Inhale as it expands, exhale as it contracts.");
 
         const interval = setInterval(() => {
             const cyclePos = timeLeft % 11;
-            // Precise 5.5s segments
-            const isExhaling = cyclePos < 5.5;
+            // 5.5s for Inhale (Expanding), 5.5s for Exhale (Contracting)
+            const isExhaling = cyclePos <= 5.5; 
             const instruction = isExhaling ? "EXHALE" : "INHALE";
             
             container.innerHTML = `
                 <div class="card">
                     <h3>NEURAL SYNC: ${this.getScientificFocus(this.currentMissionIndex)}</h3>
-                    <div class="breath-container">
-                        <div class="breath-circle breath-active"></div>
-                        <div class="breath-instruction">
-                            <h2 style="margin:0; font-size: 2.5em;">${instruction}</h2>
+                    <div class="breath-container" style="display:flex; justify-content:center; align-items:center; height:300px; position:relative;">
+                        <div class="breath-circle ${!isExhaling ? 'expand' : 'contract'}" 
+                             style="width: 200px; height: 200px; border: 4px solid var(--primary); border-radius: 50%; 
+                             transition: transform 5.5s linear; transform: scale(${!isExhaling ? 1.5 : 0.6});"></div>
+                        <div class="breath-instruction" style="position:absolute;">
+                            <h2 style="margin:0; font-size: 2.5em; color:white; text-shadow: 0 0 10px var(--primary);">${instruction}</h2>
                             <p style="color:var(--primary)">${timeLeft}s REMAINING</p>
                         </div>
                     </div>
@@ -158,8 +161,8 @@ const MaykaMiEngine = {
             `;
 
             // Audio cues for the cycle transitions
-            if (cyclePos === 10.5 || cyclePos === 5) {
-                this.speak(isExhaling ? "Inhale" : "Exhale");
+            if (cyclePos === 11 || cyclePos === 5.5) {
+                this.speak(isExhaling ? "Inhale deep" : "Exhale slowly");
             }
 
             if (timeLeft-- <= 0) {
@@ -178,7 +181,7 @@ const MaykaMiEngine = {
             <div class="card">
                 <p style="color:var(--danger); font-size:10px;">ASSESSING DECISION PATTERN...</p>
                 <p style="font-size:1.3em; margin:20px 0;">${step.q.en}</p>
-                <div id="options-grid">
+                <div id="options-grid" style="display:grid; gap:10px;">
                     ${step.op.map((opt, i) => `
                         <button class="btn-tactical" style="width:100%; text-align:left;" onclick="MaykaMiEngine.processDecision(${i}, ${step.c})">
                             ${opt}
@@ -194,14 +197,14 @@ const MaykaMiEngine = {
         const success = choice === correct;
 
         this.telemetry.decisionAccuracy.push(success);
-        this.telemetry.averageLatency = (this.telemetry.averageLatency + latency) / 2;
+        this.telemetry.averageLatency = this.telemetry.averageLatency === 0 ? latency : (this.telemetry.averageLatency + latency) / 2;
         
         if (success) {
             this.adaptiveState.vagalTone += 2;
-            this.speak("Protocol met. Tactical efficiency improved.");
+            this.speak("Protocol met.");
         } else {
             this.adaptiveState.vagalTone -= 5;
-            this.speak("Protocol breach. Analyze your hesitation index.");
+            this.speak("Protocol breach.");
         }
 
         const container = document.getElementById("app");
@@ -217,11 +220,12 @@ const MaykaMiEngine = {
     },
 
     showPhaseResult(step) {
-        this.speak("Phase complete. Storing tactical data.");
+        this.speak("Phase complete.");
         document.getElementById("app").innerHTML = `
             <div class="card">
                 <h2 style="color:var(--success)">DATA ACQUIRED</h2>
-                <p>COGNITIVE GAIN: +${step.p} PTS</p>
+                <p>${step.tx.en}</p>
+                <p>COGNITIVE GAIN: +${step.p || 100} PTS</p>
                 <button class="btn-tactical" onclick="MaykaMiEngine.nextStep()">NEXT PHASE</button>
             </div>
         `;
@@ -235,7 +239,6 @@ const MaykaMiEngine = {
     handleProgression() {
         this.currentMissionIndex++;
         if (this.currentMissionIndex >= this.missionData.missions.length) {
-            this.currentMissionIndex = 0;
             this.renderFinalReport();
         } else {
             this.currentStepIndex = 0;
@@ -244,10 +247,10 @@ const MaykaMiEngine = {
     },
 
     renderFinalReport() {
-        const acc = (this.telemetry.decisionAccuracy.filter(x => x).length / this.telemetry.decisionAccuracy.length) * 100;
-        this.telemetry.postSessionReadiness = Math.min(100, acc - (this.telemetry.averageLatency * 2));
+        const acc = (this.telemetry.decisionAccuracy.filter(x => x).length / this.telemetry.decisionAccuracy.length) * 100 || 0;
+        this.telemetry.postSessionReadiness = Math.min(100, Math.max(0, acc - (this.telemetry.averageLatency * 2)));
         
-        this.speak("Full cycle complete. Your tactical readiness analysis is ready.");
+        this.speak("Full cycle complete. Tactical readiness analysis ready.");
 
         document.getElementById("app").innerHTML = `
             <div class="card" style="text-align:left">
@@ -266,9 +269,8 @@ const MaykaMiEngine = {
                 <hr style="border-color:#333">
                 <p><b>DECISION ACCURACY:</b> ${acc.toFixed(1)}%</p>
                 <p><b>NEURAL LATENCY:</b> ${this.telemetry.averageLatency.toFixed(3)}s</p>
-                <p style="font-size:11px; margin-top:15px;">
-                    <b>ADVISOR NOTE:</b> 10-minute priming complete. 
-                    Target Excellence Level achieved. Ready for deployment.
+                <p style="font-size:11px; margin-top:15px; opacity:0.7;">
+                    <b>ADVISOR NOTE:</b> 10-minute priming complete. Target Excellence Level achieved.
                 </p>
                 <button class="btn-tactical" style="width:100%" onclick="MaykaMiEngine.renderModuleSelector()">RESTART SYSTEM</button>
             </div>
@@ -277,15 +279,10 @@ const MaykaMiEngine = {
 
     startTelemetryLoop() {
         setInterval(() => {
-            if (window.updateHUD) {
-                window.updateHUD({
-                    pulseSim: (60 + Math.random() * 10).toFixed(0),
-                    cognitiveLoad: this.adaptiveState.vagalTone,
-                    roeCompliance: this.telemetry.decisionAccuracy.length > 0 ? 
-                        ((this.telemetry.decisionAccuracy.filter(x => x).length / this.telemetry.decisionAccuracy.length) * 100).toFixed(0) : 100,
-                    microTremor: this.telemetry.averageLatency * 0.08
-                });
-            }
+            const loadEl = document.getElementById('val-load');
+            const stabEl = document.getElementById('val-stab');
+            if (loadEl) loadEl.innerText = (60 + Math.random() * 10).toFixed(0);
+            if (stabEl) stabEl.innerText = this.adaptiveState.vagalTone;
         }, 2000);
     }
 };
