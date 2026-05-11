@@ -1,128 +1,233 @@
 {
   "sys": "KAMIZEN NEURO-COGNITIVE TACTICAL SYSTEM",
-  "version": "DOD-736-SFS-ELITE",
+  "version": "DOD-736-SFS-ELITE-STABLE-3.1",
   "total_missions": 10,
+
   "ui": {
-    "fw": ["NEURO-STABILITY", "COGNITIVE-LOAD", "BIOMETRIC-CONTROL", "ROE-COMPLIANCE", "SITUATIONAL-DOMINANCE"]
+    "fw": [
+      "NEURO-STABILITY",
+      "COGNITIVE-LOAD",
+      "BIOMETRIC-CONTROL",
+      "ROE-COMPLIANCE",
+      "SITUATIONAL-DOMINANCE"
+    ]
   },
+
   "rules": [
     "Biological Response < Professional Discipline",
-    "High Stress = Low Peripheral Awareness (Must Compensate)",
-    "Amygdala Hijack Prevention = Tactical Superiority",
-    "Executive Function Maintenance = Survival"
+    "Adaptive Stress Requires Controlled Execution",
+    "ROE Compliance Overrides Performance Metrics",
+    "Cognitive Stability is Primary Objective"
   ],
+
   "missions": [
+
     {
       "id": 1,
-      "cat": "physiological_baseline",
+      "cat": "baseline_stability",
       "b": [
-        {"t": "v", "tx": {"en": "MISSION 1: CORTISOL SUPPRESSION & HOMEOSTASIS"}},
-        {"t": "h", "tx": {"en": "Neuro-Vagal Stabilization"}},
-        {"story": {"en": "Tactical environments trigger a massive release of glucocorticoids, compromising the Prefrontal Cortex. This module recalibrates your physiological baseline to prevent cognitive freezing."}},
-        {"t": "breath_auto", "d": 30, "tx": {"en": "Vagal Tone Activation (4-4-4-4)"}, "inf": {"en": "Forced parasympathetic dominance to maintain fine motor skill retention."}},
-        {"t": "d", "q": {"en": "Bio-Assessment: Heart rate reaches 145 BPM. Which neurological failure is imminent?"},
-          "op": ["Auditory Exclusion / Vision Tunneling", "Enhanced Reasoning", "Increased Reaction Speed", "Acute Sensitivity"],
-          "c": 0, "ex": ["Sympathetic over-arousal leads to loss of peripheral data and critical failure in security."]
+        {
+          "t": "v",
+          "tx": { "en": "MISSION 1: NEURO BASELINE CALIBRATION" }
         },
-        {"t": "sil", "d": 30, "tx": {"en": "Neural Pattern Recognition"}, "inf": {"en": "Filters sensory noise to optimize target acquisition speed."}}
+        {
+          "t": "breath_auto",
+          "d": 25,
+          "tx": { "en": "RESPIRATORY CONTROL PHASE" },
+          "inf": { "en": "Establish cognitive baseline stability." }
+        },
+        {
+          "t": "r",
+          "tx": { "en": "BASELINE LOCKED" },
+          "p": 50
+        }
       ]
     },
+
     {
       "id": 2,
-      "cat": "visual_cognition",
+      "cat": "decision_core",
       "b": [
-        {"t": "v", "tx": {"en": "MISSION 2: PID CYCLE OPTIMIZATION"}},
-        {"story": {"en": "In high-resolution 4K environments, 'Threat vs. Non-Threat' discrimination must occur in under 200ms. We optimize the OODA loop at the neurological level."}},
-        {"t": "d", "q": {"en": "Target identification is obscured by low-light/NVG conditions. PID is not established. Action?"},
-          "op": ["Suppress area", "Execute 'Shout & Show' protocol from cover", "Immediate Retreat", "Blind Engagement"],
-          "c": 1, "ex": ["Rules of Engagement require Positive Identification to prevent fratricide/collateral damage."]
+        {
+          "t": "v",
+          "tx": { "en": "MISSION 2: DECISION PROCESSING CORE" }
         },
-        {"t": "r", "tx": "IDENTIFICATION PRECISION +20%", "p": 100}
+        {
+          "t": "d",
+          "q": { "en": "VISUAL INPUT PARTIALLY OBSCURED. WHAT IS PRIORITY?" },
+          "op": [
+            "WAIT FOR CLARITY",
+            "REQUEST DATA",
+            "ESTIMATE",
+            "IGNORE"
+          ],
+          "c": 1,
+          "ex": [
+            "Data integrity is prioritized over speed."
+          ]
+        },
+        {
+          "t": "r",
+          "tx": { "en": "DECISION MODULE ACTIVE" },
+          "p": 80
+        }
       ]
     },
+
     {
       "id": 3,
-      "cat": "stress_inoculation",
+      "cat": "stress_introduction",
       "b": [
-        {"t": "v", "tx": {"en": "MISSION 3: AMYGDALA BYPASS & STARTLE REFLEX"}},
-        {"story": {"en": "Unexpected kinetic stimuli trigger the midbrain. This mission trains the bypass of the startle response to maintain weapon platform stability."}},
-        {"t": "sil", "d": 45, "tx": {"en": "Auditory Focus Filter"}, "inf": {"en": "Maintains attention on command frequency amidst high-decibel environmental stress."}},
-        {"t": "r", "tx": "REFLEX CONTROL STABILIZED", "p": 100}
+        {
+          "t": "v",
+          "tx": { "en": "MISSION 3: STRESS INTRODUCTION" }
+        },
+        {
+          "t": "sil",
+          "d": 20,
+          "tx": { "en": "FOCUS RETENTION PHASE" }
+        },
+        {
+          "t": "r",
+          "tx": { "en": "STRESS ACTIVE" },
+          "p": 90
+        }
       ]
     },
+
     {
       "id": 4,
-      "cat": "legal_psychology",
+      "cat": "roe_logic",
       "b": [
-        {"t": "v", "tx": {"en": "MISSION 4: ETHICAL JUDGMENT UNDER KINETIC PRESSURE"}},
-        {"story": {"en": "The Law of Armed Conflict (LOAC) is not an academic exercise; it is an operational constraint. Test your moral discipline under simulated fire."}},
-        {"t": "d", "q": {"en": "A combatant is incapacitated but still reaches for a radio. Tactical Status?"},
-          "op": ["Neutralize target", "Secure target and assess medical status", "Ignore and advance", "Call for Air Support"],
-          "c": 1, "ex": ["Incapacitated subjects must be secured according to Geneva Convention and SFS protocols."]
+        {
+          "t": "v",
+          "tx": { "en": "MISSION 4: ROE DECISION LOGIC" }
+        },
+        {
+          "t": "d",
+          "q": { "en": "UNKNOWN SUBJECT IN RESTRICTED AREA. ACTION?" },
+          "op": [
+            "ESCALATE",
+            "OBSERVE",
+            "SECURE",
+            "IGNORE"
+          ],
+          "c": 2,
+          "ex": [
+            "Security protocol requires containment before escalation."
+          ]
         }
       ]
     },
+
     {
       "id": 5,
-      "cat": "vestibular_calibration",
+      "cat": "cognitive_load",
       "b": [
-        {"t": "v", "tx": {"en": "MISSION 5: VESTIBULAR-SENSORY INTEGRATION"}},
-        {"story": {"en": "VR-induced kinesis occurs when visual and vestibular signals conflict. This calibration prevents motion sickness and ensures 360-degree orientation."}},
-        {"t": "breath_auto", "d": 20, "tx": {"en": "Equilibrium Stabilization"}, "inf": {"en": "Balances the inner ear to ensure high-mobility efficiency in the 3D VR space."}},
-        {"t": "r", "tx": "SPATIAL COGNITION READY", "p": 150}
+        {
+          "t": "v",
+          "tx": { "en": "MISSION 5: COGNITIVE LOAD TEST" }
+        },
+        {
+          "t": "sil",
+          "d": 25,
+          "tx": { "en": "MULTI-INPUT STABILIZATION" }
+        }
       ]
     },
+
     {
       "id": 6,
-      "cat": "cognitive_debrief",
-      "b": [
-        {"t": "v", "tx": {"en": "MISSION 6: POST-ACTION COGNITIVE CONSOLIDATION"}},
-        {"story": {"en": "Immediately following high-stress simulation, memory is hyper-fragmented. We utilize neuro-calm to ensure accurate AAR (After Action Report) data."}},
-        {"t": "sil", "d": 60, "tx": {"en": "Synaptic Recovery Phase"}, "inf": {"en": "Transfers acute stress data to long-term memory for objective operational analysis."}},
-        {"t": "c", "tx": {"en": "Stability allows for objective truth in reporting."}}
-      ]
-    },
-    {
-      "id": 7,
-      "cat": "behavioral_influence",
-      "b": [
-        {"t": "v", "tx": {"en": "MISSION 7: PSYCHOLOGICAL FORCE MULTIPLIERS"}},
-        {"story": {"en": "Voice and presence are weapons of de-escalation. Command the environment without expending ammunition."}},
-        {"t": "d", "q": {"en": "Non-compliant civilian blocks a tactical path. Correct application of authority?"},
-          "op": ["Physical strike", "Direct commands with physiological dominance and clear exit route", "Plead", "Wait"],
-          "c": 1, "ex": ["Directional commands reduce civilian cognitive paralysis and clear the AO."]
-        }
-      ]
-    },
-    {
-      "id": 8,
       "cat": "anomaly_detection",
       "b": [
-        {"t": "v", "tx": {"en": "MISSION 8: BEHAVIORAL ANOMALY DETECTION (BAD)"}},
-        {"story": {"en": "Adversaries utilize 'Tactical Mimicry'. Look beyond the visual. Identify the behavioral deviation before the kinetic event."}},
-        {"t": "d", "q": {"en": "Subject is dressed as local clergy but maintains military-grade posture and gear-check habits. Analysis?"},
-          "op": ["Ignore", "Treat as High-Value Interest / Immediate Threat", "Request ID", "Observe"],
-          "c": 1, "ex": ["Behavioral incongruity is a primary indicator of hostile intent in Force-on-Force scenarios."]
+        {
+          "t": "v",
+          "tx": { "en": "MISSION 6: ANOMALY DETECTION" }
+        },
+        {
+          "t": "d",
+          "q": { "en": "SUBJECT BEHAVIOR DEVIATES FROM ENVIRONMENTAL NORM. CLASSIFY?" },
+          "op": [
+            "NORMAL",
+            "SUSPICIOUS",
+            "THREAT",
+            "UNKNOWN"
+          ],
+          "c": 1
         }
       ]
     },
+
     {
-      "id": 9,
-      "cat": "unit_cohesion",
+      "id": 7,
+      "cat": "adaptive_pressure",
       "b": [
-        {"t": "v", "tx": {"en": "MISSION 9: NEURAL SYNERGY - UNIT LEVEL"}},
-        {"story": {"en": "An 8-man element functions as a single neural network. Your biometrics affect your team. Synchronize for mission success."}},
-        {"t": "breath_auto", "d": 40, "tx": {"en": "Unit Cohesion Breath"}, "inf": {"en": "Aligns the team's heart rate variability (HRV) for tactical synchronization."}}
+        {
+          "t": "v",
+          "tx": { "en": "MISSION 7: ADAPTIVE PRESSURE SYSTEM" }
+        },
+        {
+          "t": "sil",
+          "d": 30,
+          "tx": { "en": "DYNAMIC LOAD SIMULATION" }
+        }
       ]
     },
+
+    {
+      "id": 8,
+      "cat": "scenario_logic",
+      "b": [
+        {
+          "t": "v",
+          "tx": { "en": "MISSION 8: SCENARIO BRANCHING" }
+        },
+        {
+          "t": "d",
+          "q": { "en": "MULTIPLE SIGNALS DETECTED. PRIORITIZE?" },
+          "op": [
+            "FASTEST",
+            "HIGHEST RISK",
+            "MOST INFORMATION",
+            "UNKNOWN"
+          ],
+          "c": 1
+        }
+      ]
+    },
+
+    {
+      "id": 9,
+      "cat": "integration",
+      "b": [
+        {
+          "t": "v",
+          "tx": { "en": "MISSION 9: SYSTEM INTEGRATION" }
+        },
+        {
+          "t": "breath_auto",
+          "d": 30,
+          "tx": { "en": "FULL SYSTEM ALIGNMENT" },
+          "inf": { "en": "Synchronize cognitive and physiological response." }
+        }
+      ]
+    },
+
     {
       "id": 10,
-      "cat": "final_validation",
+      "cat": "final_readiness",
       "b": [
-        {"t": "v", "tx": {"en": "MISSION 10: TOTAL OPERATIONAL MISSION READINESS"}},
-        {"story": {"en": "Neuro-cognitive calibration complete. Physiological response is suppressed. Ethical compass is aligned. You are ready for simulation."}},
-        {"t": "r", "tx": "736 SFS READY - DEPLOY TO VR PLATFORM", "p": 500}
+        {
+          "t": "v",
+          "tx": { "en": "MISSION 10: OPERATIONAL READINESS CHECK" }
+        },
+        {
+          "t": "r",
+          "tx": { "en": "READY FOR SIMULATION DEPLOYMENT" },
+          "p": 500
+        }
       ]
     }
+
   ]
-} 
+}
