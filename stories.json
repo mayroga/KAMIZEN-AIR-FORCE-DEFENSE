@@ -1,0 +1,76 @@
+{
+  "system": "KAMIZEN TACTICAL - NEURO-COGNITIVE KNOWLEDGE BASE",
+  "version": "DOD-SFS-2.0",
+  "stories": [
+    {
+      "id": 1,
+      "cat": "physiological_base",
+      "t": "The Foundation of the Oak",
+      "en": "A mighty oak dreams of clouds because it was born to be giant, building roots in the dark to sustain the greatness to come. In tactical training, silence and breathing are your roots. You aren't just waiting; you are preparing the neurological foundation to rise as the leader, the specialist, or the operator you were trained to be.",
+      "es": "Un roble gigante sueña con las nubes porque nació para ser colosal, creando raíces en la oscuridad para sostener la grandeza que viene. En el entrenamiento táctico, el silencio y la respiración son tus raíces. No estás solo esperando; estás construyendo la base neurológica para levantarte como el líder, el especialista o el operador para el que fuiste entrenado."
+    },
+    {
+      "id": 2,
+      "cat": "tactical_adaptation",
+      "t": "The Flow of the Operator",
+      "en": "A young seller adapted and sold warm drinks when the weather changed, instead of stopping. In the field, rigid plans break under fire. Tactical superiority does not reward the rigid, but those who adjust their OODA loop and adapt fast without losing the mission objective.",
+      "es": "Un joven vendedor se adaptó y vendió bebidas calientes cuando el clima cambió, en lugar de detenerse. En el campo, los planes rígidos se rompen bajo fuego. La superioridad táctica no premia la rigidez, sino a quienes ajustan su ciclo OODA y se adaptan rápido sin perder el objetivo de la misión."
+    },
+    {
+      "id": 3,
+      "cat": "situational_awareness",
+      "t": "The Golden Thread of Awareness",
+      "en": "A scout imagines a golden thread connecting him to his environment. When he stays aware, the thread is strong. When he gets distracted, it weakens. Your situational awareness is the invisible connection between your team and survival. If the thread breaks, the mission fails.",
+      "es": "Un explorador imagina un hilo dorado que lo conecta con su entorno. Cuando está atento, el hilo es fuerte. Cuando se distrae, se debilita. Tu conciencia situacional es la conexión invisible entre tu equipo y la supervivencia. Si el hilo se rompe, la misión falla."
+    },
+    {
+      "id": 4,
+      "cat": "resource_management",
+      "t": "The Two Paths of Force",
+      "en": "A commander separates his energy into two paths: one for immediate action and one for strategic reserve. Those who expend everything in the first contact live in survival. Those who maintain a reserve build the freedom to dominate the engagement later.",
+      "es": "Un comandante separa su energía en dos caminos: uno para la acción inmediata y otro para la reserva estratégica. Quienes agotan todo en el primer contacto viven en supervivencia. Quienes mantienen una reserva construyen la libertad para dominar el enfrentamiento después."
+    },
+    {
+      "id": 5,
+      "cat": "emotional_discipline",
+      "t": "The Glass of Kinetic Clarity",
+      "en": "When adrenaline rises, the mind becomes cloudy like shaken water. If you follow the protocol and breathe, the mind settles and clarity returns. Decisions made in the chaos of an Amygdala Hijack always distort the Rules of Engagement.",
+      "es": "Cuando la adrenalina sube, la mente se vuelve turbia como agua agitada. Si sigues el protocolo y respiras, la mente se calma y vuelve la claridad. Las decisiones tomadas en el caos de un secuestro de la amígdala siempre distorsionan las Reglas de Enfrentamiento."
+    },
+    {
+      "id": 6,
+      "cat": "operational_echo",
+      "t": "The Echo of Command",
+      "en": "A soldier shouts into a canyon and hears his voice return. Everything you execute in the field returns to the unit. Disciplined actions and clear words return as mission success; hesitation and chaos return as casualty reports. Every action has an echo.",
+      "es": "Un soldado grita en un cañón y escucha su voz regresar. Todo lo que ejecutas en el campo vuelve a la unidad. Las acciones disciplinadas y las palabras claras regresan como éxito de misión; la duda y el caos regresan como informes de bajas. Toda acción tiene un eco."
+    },
+    {
+      "id": 7,
+      "cat": "resilience",
+      "t": "The Lead and the Correction",
+      "en": "A marksman feared missing the target, but learned that every shot provides data to improve the next. Your growth is not about a perfect record, but about the ability to recalibrate your focus even after a critical failure in simulation.",
+      "es": "Un tirador temía fallar al blanco, pero aprendió que cada disparo da datos para mejorar el siguiente. Tu crecimiento no se trata de un récord perfecto, sino de la capacidad de recalibrar tu enfoque incluso después de un fallo crítico en la simulación."
+    },
+    {
+      "id": 8,
+      "cat": "intuition_intelligence",
+      "t": "The Internal Radar",
+      "en": "An experienced pilot notices small vibrations in the stick before the engine fails. As an operator, you possess an internal signal called intuition. When a sector 'feels' wrong without an obvious threat, your neuro-cognitive training is telling you to establish PID immediately.",
+      "es": "Un piloto experimentado nota pequeñas vibraciones en la palanca antes de que el motor falle. Como operador, posees una señal interna llamada intuición. Cuando un sector se 'siente' mal sin una amenaza obvia, tu entrenamiento neuro-cognitivo te dice que establezcas PID de inmediato."
+    },
+    {
+      "id": 9,
+      "cat": "unit_cohesion",
+      "t": "The Structure of the Phalanx",
+      "en": "A fire team is not built by individual heroes, but by mutual support. Each shield protects the person to the left. Strength in an 8-man element comes from biometric synchronization and cooperation, not individual control.",
+      "es": "Un equipo de fuego no se construye con héroes individuales, sino con apoyo mutuo. Cada escudo protege a la persona a la izquierda. La fuerza en un elemento de 8 hombres viene de la sincronización biométrica y la cooperación, no del control individual."
+    },
+    {
+      "id": 10,
+      "cat": "value_proposition",
+      "t": "The Force Multiplier",
+      "en": "Two units have the same gear. One only trains with weapons; the other adds neuro-cognitive calibration. The second unit always wins because clarity creates trust, trust creates speed, and speed in the OODA loop is the ultimate force multiplier.",
+      "es": "Dos unidades tienen el mismo equipo. Una solo entrena con armas; la otra añade calibración neuro-cognitiva. La segunda siempre gana porque la claridad crea confianza, la confianza crea velocidad, y la velocidad en el ciclo OODA es el multiplicador de fuerza definitivo."
+    }
+  ]
+}
