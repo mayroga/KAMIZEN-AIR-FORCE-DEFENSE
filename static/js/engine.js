@@ -1,17 +1,17 @@
 /**
  * MAYKAMI NEURO-ENGINE - "AL CIELO"
- * Specialized in Tactical Neuro-Priming and Mental Synchronization.
- * Scientific Neuro-Priming System (Pre-VR)
+ * Official Language: ENGLISH
+ * Specialized in Tactical Neuro-Priming and Vagal Tone Stability.
+ * Scientific Respiratory Cycle: 11 Seconds (5.5s Inhale / 5.5s Exhale).
  */
 
-const KamizenEngine = {
+const MaykaMiEngine = {
     currentMissionIndex: 0,
     currentStepIndex: 0,
     missionData: null,
     currentStepStart: 0,
     isTrainingActive: false,
 
-    // 🧠 NEURO-SCALABILITY (Learning from the operator)
     adaptiveState: {
         vagalTone: 60,
         excellenceScore: 0,
@@ -20,7 +20,6 @@ const KamizenEngine = {
         totalFailures: 0
     },
 
-    // 📡 SIMULATED SENSORS (For Scalable Learning)
     telemetry: {
         preSessionBalance: 0,
         postSessionReadiness: 0,
@@ -28,34 +27,29 @@ const KamizenEngine = {
         decisionAccuracy: [],
     },
 
-    // 🗣️ MASTER VOICE CONFIGURATION
     voice: {
         synth: window.speechSynthesis,
         isSpeaking: false,
-        pitch: 0.9, // Professional and deep
-        rate: 0.85  // Calm and guiding
+        pitch: 0.9, 
+        rate: 0.85  
     },
 
     async init() {
-        console.log("AL CIELO TERMINAL: READY.");
+        console.log("MAYKAMI TERMINAL: ONLINE.");
         try {
             const res = await fetch('/api/missions');
             this.missionData = await res.json();
             
-            // Baseline before training
             this.telemetry.preSessionBalance = 55 + Math.random() * 15;
             this.renderModuleSelector();
             this.startTelemetryLoop();
             
-            this.speak("System initialized. Welcome to Mayka Mi Neurogame. Please select your training module to begin neuro-priming.");
+            this.speak("System initialized. Welcome to Mayka Mi Neurogame. Select your tactical domain to begin synchronization.");
         } catch (e) {
             console.error("DATA ERROR:", e);
         }
     },
 
-    // ==========================================
-    // 🗣️ THE MASTER VOICE (Neural Synthesis)
-    // ==========================================
     speak(text) {
         if (this.voice.synth.speaking) this.voice.synth.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
@@ -65,21 +59,18 @@ const KamizenEngine = {
         this.voice.synth.speak(utterance);
     },
 
-    // ==========================================
-    // 🎛️ SUPERVISOR MODULE SELECTOR
-    // ==========================================
     renderModuleSelector() {
         const container = document.getElementById("app");
         let html = `
             <div class="card" style="max-width:850px;">
-                <h2 style="color:var(--primary); margin-bottom:5px;">TACTICAL MODULE SELECTOR</h2>
-                <p style="font-size:10px; margin-bottom:20px; opacity:0.8;">SUPERVISOR ACCESS - 10 NEURAL DOMAINS AVAILABLE</p>
+                <h2 style="color:var(--primary); margin-bottom:5px;">NEURAL DOMAIN SELECTOR</h2>
+                <p style="font-size:10px; margin-bottom:20px; opacity:0.8;">OPERATOR ACCESS - 10 DOMAINS AVAILABLE</p>
                 <div id="options-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
         `;
 
         this.missionData.missions.forEach((m, index) => {
             html += `
-                <button class="btn-tactical" style="text-align:left; font-size:11px;" onclick="KamizenEngine.startMissionByIndex(${index})">
+                <button class="btn-tactical" style="text-align:left; font-size:11px;" onclick="MaykaMiEngine.startMissionByIndex(${index})">
                     <span style="color:var(--primary)">[MOD ${index + 1}]</span> ${m.id}
                     <span style="display:block; font-size:9px; color:var(--success); margin-top:4px;">FOCUS: ${this.getScientificFocus(index)}</span>
                 </button>
@@ -92,7 +83,7 @@ const KamizenEngine = {
 
     getScientificFocus(index) {
         const focuses = [
-            "COHERENCE & VAGAL TONE", "PREFRONTAL CORTEX STIM", "ROE JUDGMENT ACCURACY",
+            "COHERENCE & VAGAL TONE", "PREFRONTAL CORTEX STIM", "TACTICAL JUDGMENT ACCURACY",
             "MICRO-TREMOR SUPPRESSION", "SITUATIONAL LATENCY", "COGNITIVE LOAD SHIFTING",
             "MOTOR-NEURON STABILITY", "SYNAPTIC SYNCHRONIZATION", "VISUAL FIELD RETENTION",
             "EXECUTIVE DECISION EXCELLENCE"
@@ -100,9 +91,6 @@ const KamizenEngine = {
         return focuses[index] || "NEURAL CONDITIONING";
     },
 
-    // ==========================================
-    // 🚀 MISSION LOGIC (1 -> 10 -> 1)
-    // ==========================================
     startMissionByIndex(index) {
         this.currentMissionIndex = index;
         this.currentStepIndex = 0;
@@ -132,24 +120,22 @@ const KamizenEngine = {
         const container = document.getElementById("app");
         container.innerHTML = `
             <div class="card">
-                <h3 style="color:var(--primary)">MODULE ${this.currentMissionIndex + 1}</h3>
+                <h3 style="color:var(--primary)">PROTOCOL ${this.currentMissionIndex + 1}</h3>
                 <p style="font-size:1.5em; line-height:1.4;">${text}</p>
-                <button class="btn-tactical" onclick="KamizenEngine.nextStep()">CONTINUE</button>
+                <button class="btn-tactical" onclick="MaykaMiEngine.nextStep()">CONTINUE</button>
             </div>
         `;
         this.speak(text);
     },
 
-    // ==========================================
-    // 🌬️ SCIENTIFIC BREATHING (11s Cycle)
-    // ==========================================
     runScientificBreathing(step) {
         let timeLeft = step.d; 
         const container = document.getElementById("app");
         this.speak("Synchronize your breathing with the circle. Inhale as it expands, exhale as it contracts. Stabilize your vagal tone.");
 
         const interval = setInterval(() => {
-            const isExhaling = (timeLeft % 11) < 5.5;
+            const cyclePos = (step.d - timeLeft) % 11;
+            const isExhaling = cyclePos >= 5.5;
             const instruction = isExhaling ? "EXHALE" : "INHALE";
             
             container.innerHTML = `
@@ -178,11 +164,11 @@ const KamizenEngine = {
 
         container.innerHTML = `
             <div class="card">
-                <p style="color:var(--danger); font-size:10px;">ASSESSING OPERATOR DECISION PATTERN...</p>
+                <p style="color:var(--danger); font-size:10px;">ASSESSING DECISION PATTERN...</p>
                 <p style="font-size:1.3em; margin:20px 0;">${step.q.en}</p>
                 <div id="options-grid">
                     ${step.op.map((opt, i) => `
-                        <button class="btn-tactical" style="width:100%; text-align:left;" onclick="KamizenEngine.processDecision(${i}, ${step.c})">
+                        <button class="btn-tactical" style="width:100%; text-align:left;" onclick="MaykaMiEngine.processDecision(${i}, ${step.c})">
                             ${opt}
                         </button>
                     `).join('')}
@@ -200,10 +186,10 @@ const KamizenEngine = {
         
         if (success) {
             this.adaptiveState.vagalTone += 2;
-            this.speak("Correct choice. Tactical efficiency improved.");
+            this.speak("Correct. Efficiency improved.");
         } else {
             this.adaptiveState.vagalTone -= 5;
-            this.speak("Incorrect. Analyze your hesitation index.");
+            this.speak("Protocol breach. Analyze latency.");
         }
 
         const container = document.getElementById("app");
@@ -212,19 +198,19 @@ const KamizenEngine = {
                 <h2 style="color:${success ? 'var(--success)' : 'var(--danger)'}">
                     ${success ? 'PROTOCOL MET' : 'PROTOCOL BREACH'}
                 </h2>
-                <p>LATENCY: ${latency.toFixed(3)}s</p>
+                <p>NEURAL LATENCY: ${latency.toFixed(3)}s</p>
             </div>
         `;
         setTimeout(() => this.nextStep(), 1500);
     },
 
     showPhaseResult(step) {
-        this.speak("Phase complete. Storing data for VR simulation.");
+        this.speak("Phase complete. Storing tactical data.");
         document.getElementById("app").innerHTML = `
             <div class="card">
                 <h2 style="color:var(--success)">DATA ACQUIRED</h2>
                 <p>COGNITIVE GAIN: +${step.p} PTS</p>
-                <button class="btn-tactical" onclick="KamizenEngine.nextStep()">NEXT PHASE</button>
+                <button class="btn-tactical" onclick="MaykaMiEngine.nextStep()">NEXT PHASE</button>
             </div>
         `;
     },
@@ -245,18 +231,15 @@ const KamizenEngine = {
         }
     },
 
-    // ==========================================
-    // 📊 THE SPECIALIST REPORT
-    // ==========================================
     renderFinalReport() {
         const acc = (this.telemetry.decisionAccuracy.filter(x => x).length / this.telemetry.decisionAccuracy.length) * 100;
-        this.telemetry.postSessionReadiness = Math.min(100, acc - (this.telemetry.averageLatency * 3));
+        this.telemetry.postSessionReadiness = Math.min(100, acc - (this.telemetry.averageLatency * 2));
         
-        this.speak("Full cycle complete. Your tactical readiness has been analyzed.");
+        this.speak("Full cycle complete. Your tactical readiness analysis is ready.");
 
         document.getElementById("app").innerHTML = `
             <div class="card" style="text-align:left">
-                <h2 style="color:var(--primary); text-align:center;">SPECIALIST ANALYSIS</h2>
+                <h2 style="color:var(--primary); text-align:center;">READINESS ANALYSIS</h2>
                 <hr style="border-color:#333">
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
                     <div>
@@ -271,11 +254,7 @@ const KamizenEngine = {
                 <hr style="border-color:#333">
                 <p><b>DECISION ACCURACY:</b> ${acc.toFixed(1)}%</p>
                 <p><b>NEURAL LATENCY:</b> ${this.telemetry.averageLatency.toFixed(3)}s</p>
-                <p style="font-size:11px; margin-top:15px;">
-                    <b>ADVISOR NOTE:</b> The operator has completed the 10-minute priming. 
-                    Target achieved Excellence Level. Ready for VR deployment.
-                </p>
-                <button class="btn-tactical" style="width:100%" onclick="KamizenEngine.renderModuleSelector()">RESTART SYSTEM</button>
+                <button class="btn-tactical" style="width:100%" onclick="MaykaMiEngine.renderModuleSelector()">RESTART SYSTEM</button>
             </div>
         `;
     },
@@ -284,15 +263,15 @@ const KamizenEngine = {
         setInterval(() => {
             if (window.updateHUD) {
                 window.updateHUD({
-                    pulseSim: (60 + Math.random() * 10),
+                    pulseSim: (60 + Math.random() * 10).toFixed(0),
                     cognitiveLoad: this.adaptiveState.vagalTone,
                     roeCompliance: this.telemetry.decisionAccuracy.length > 0 ? 
                         ((this.telemetry.decisionAccuracy.filter(x => x).length / this.telemetry.decisionAccuracy.length) * 100).toFixed(0) : 100,
-                    microTremor: this.telemetry.averageLatency * 0.1
+                    microTremor: this.telemetry.averageLatency * 0.08
                 });
             }
         }, 2000);
     }
 };
 
-document.addEventListener("DOMContentLoaded", () => KamizenEngine.init());
+document.addEventListener("DOMContentLoaded", () => MaykaMiEngine.init());
