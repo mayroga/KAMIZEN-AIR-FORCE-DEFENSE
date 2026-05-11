@@ -1,174 +1,94 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 import os
 import json
-import logging
+from flask import Flask, render_template, jsonify, request, send_file
+from flask_cors import CORS
+from reports import KamizenReport  # Importamos el nuevo módulo de reportes
 
-# Configuración de Logs Tácticos
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("KAMIZEN_TACTICAL")
+app = Flask(__name__)
+CORS(app)
 
-app = FastAPI(
-    title="KAMIZEN NEURO-COGNITIVE TACTICAL SYSTEM",
-    description="Interface de Calibración Operativa para el 736 SFS",
-    version="2.0.0"
-)
-
-# =========================================================
-# 📁 CONFIGURACIÓN DE DIRECTORIOS (ESTRUCTURA OFFLINE)
-# =========================================================
+# Configuración de Rutas
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.join(BASE_DIR, "static")
+DATA_FILE = os.path.join(BASE_DIR, 'data', 'missions_tactical.json')
+REPORTS_DIR = os.path.join(BASE_DIR, 'reports_generated')
 
-# Asegurar que el sistema de archivos sea coherente
-if not os.path.exists(STATIC_DIR):
-    os.makedirs(STATIC_DIR)
+# Asegurar que la carpeta de reportes exista
+if not os.path.exists(REPORTS_DIR):
+    os.makedirs(REPORTS_DIR)
 
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+# --- RUTAS DE NAVEGACIÓN ---
 
-# =========================================================
-# 🧠 SISTEMA DE CACHÉ DE MISIÓN (OPTIMIZACIÓN DE MEMORIA)
-# =========================================================
-CACHE = {
-    "missions": None,
-    "last_sync": None
-}
+@app.route('/')
+def index():
+    """Interfaz principal del sistema Kamizen."""
+    return render_template('index.html')
 
-# =========================================================
-# 🔍 CARGADOR DE DATOS TÁCTICOS (DOD-READY)
-# =========================================================
-def load_tactical_json(path):
-    """Carga segura de protocolos de misión con validación de integridad."""
+# --- API DE MISIONES (INTERNET ABIERTO / SISTEMA CERRADO) ---
+
+@app.route('/api/missions', methods=['GET'])
+def get_missions():
+    """Sirve las misiones desde el archivo JSON local."""
     try:
-        if not os.path.exists(path):
-            logger.warning(f"⚠️ PROTOCOLO NO ENCONTRADO: {path}")
-            return None
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return jsonify(data)
     except Exception as e:
-        logger.error(f"❌ FALLO CRÍTICO DE LECTURA: {path} -> {e}")
-        return None
+        return jsonify({"error": str(e)}), 500
 
-# =========================================================
-# 🎯 MOTOR DE CARGA DE MISIONES (SISTEMA MULTI-ARCHIVO)
-# =========================================================
-def load_missions():
-    """Compila todas las misiones tácticas en un protocolo único de entrenamiento."""
-    if CACHE["missions"] is not None:
-        return CACHE["missions"]
+# --- PROCESAMIENTO DE TELEMETRÍA Y GENERACIÓN DE PDF ---
 
-    all_missions = []
-    # Busca archivos que sigan el patrón militar: missions_tactical, missions_survival, etc.
-    files = sorted([
-        f for f in os.listdir(BASE_DIR)
-        if f.startswith("missions_") and f.endswith(".json")
-    ])
+@app.route('/api/state', methods=['POST'])
+def save_state():
+    """
+    Recibe la telemetría detallada y los sensores virtuales del frontend.
+    Genera el reporte PDF de Asesoría Técnica automáticamente.
+    """
+    try:
+        session_data = request.json
+        if not session_data:
+            return jsonify({"status": "error", "message": "No data received"}), 400
 
-    for file in files:
-        path = os.path.join(BASE_DIR, file)
-        data = load_tactical_json(path)
+        # 1. Preparar el nombre del archivo con timestamp
+        timestamp = datetime_now_str = os.path.getmtime(DATA_FILE) # Placeholder simple
+        report_filename = f"Kamizen_Report_{int(os.path.getmtime(DATA_FILE))}.pdf"
+        report_path = os.path.join(REPORTS_DIR, report_filename)
 
-        if not data:
-            continue
+        # 2. Invocar al motor de reportes (reports.py)
+        # Nota: KamizenReport usa los datos de sensores virtuales enviados desde engine.js
+        report_engine = KamizenReport(operator_id="UNIT-736-SFS-OP")
+        report_engine.generate_pdf(session_data, report_path)
 
-        missions = []
-        if isinstance(data, dict):
-            # Soporte para diferentes nomenclaturas de bases de datos militares
-            missions = (data.get("missions") or data.get("data") or [])
-        elif isinstance(data, list):
-            missions = data
+        # 3. Retornar el ID del reporte para su descarga
+        return jsonify({
+            "status": "success",
+            "message": "Asesoría procesada y PDF generado",
+            "report_id": report_filename
+        })
 
-        for m in missions:
-            if isinstance(m, dict) and "id" in m:
-                all_missions.append(m)
+    except Exception as e:
+        print(f"Error en procesamiento de estado: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-    # ORDEN ABSOLUTO POR ID DE MISIÓN PARA PROGRESIÓN LÓGICA
-    all_missions = sorted(all_missions, key=lambda x: x["id"])
+# --- DESCARGA DE REPORTES ---
 
-    CACHE["missions"] = {
-        "status": "OPERATIONAL",
-        "total_modules": len(all_missions),
-        "missions": all_missions
-    }
-    return CACHE["missions"]
+@app.route('/api/download-report/<report_id>', methods=['GET'])
+def download_report(report_id):
+    """Permite al usuario descargar su reporte PDF de asesoría."""
+    try:
+        path = os.path.join(REPORTS_DIR, report_id)
+        if os.path.exists(path):
+            return send_file(path, as_attachment=True)
+        else:
+            return "Reporte no encontrado", 404
+    except Exception as e:
+        return str(e), 500
 
-# =========================================================
-# 🌐 RUTAS DE LA INTERFAZ (FRONTEND)
-# =========================================================
-@app.get("/")
-def terminal_root():
-    """Punto de entrada principal a la terminal de entrenamiento."""
-    return FileResponse(os.path.join(STATIC_DIR, "session.html"))
+# --- MODALIDADES DE EJECUCIÓN ---
 
-@app.get("/session")
-def session_interface():
-    """Acceso directo a la sesión de calibración neuro-cognitiva."""
-    return FileResponse(os.path.join(STATIC_DIR, "session.html"))
-
-# =========================================================
-# 🎯 API DE DATOS DE MISIÓN
-# =========================================================
-@app.get("/api/missions")
-def get_mission_database():
-    """Retorna la base de datos completa de entrenamiento táctico."""
-    return load_missions()
-
-@app.get("/api/missions/{mission_id}")
-def get_specific_module(mission_id: int):
-    """Acceso a un módulo específico de calibración."""
-    database = load_missions()["missions"]
-    for m in database:
-        if m.get("id") == mission_id:
-            return m
-    raise HTTPException(status_code=404, detail="Módulo táctico no encontrado.")
-
-# =========================================================
-# 🧠 SISTEMA DE ESTADO DE OPERADOR (PERSISTENCIA DE DATOS)
-# =========================================================
-OPERATOR_STATE = {
-    "operator_id": "UNIT-736-SFS",
-    "current_mission": 1,
-    "cognitive_score": 0,
-    "status": "READY"
-}
-
-@app.get("/api/state")
-def get_operator_status():
-    """Retorna el progreso actual del soldado en el sistema."""
-    return OPERATOR_STATE
-
-@app.post("/api/state")
-def update_operator_status(data: dict):
-    """Actualiza el progreso tras completar módulos o simulaciones VR."""
-    OPERATOR_STATE.update(data)
-    return {
-        "ok": True,
-        "current_status": OPERATOR_STATE
-    }
-
-# =========================================================
-# 🧪 DIAGNÓSTICO DE SISTEMA
-# =========================================================
-@app.get("/health")
-def system_diagnostic():
-    """Chequeo de integridad para el instructor."""
-    return {
-        "status": "CONNECTED",
-        "database": "SYNCED",
-        "mode": "OFFLINE_SECURE"
-    }
-
-# =========================================================
-# ▶ LANZAMIENTO DEL SERVIDOR (COMMAND CENTER)
-# =========================================================
-if __name__ == "__main__":
-    import uvicorn
-    logger.info("🚀 INICIANDO CENTRO DE MANDO KAMIZEN TACTICAL...")
-    # Configurado para ser accesible en la red local del maletín (0.0.0.0)
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=False  # En producción militar el código es estático y seguro
-    )
+if __name__ == '__main__':
+    # El sistema detecta si está en Render o en local
+    port = int(os.environ.get('PORT', 5000))
+    
+    # Para pruebas iniciales con Internet Abierto, debug está activado.
+    # En sistema cerrado para el 736 SFS, se debe desactivar el debug.
+    app.run(host='0.0.0.0', port=port, debug=True)
