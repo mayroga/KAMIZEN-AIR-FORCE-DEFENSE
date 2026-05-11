@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>KAMIZEN TACTICAL - HUD v2.5</title>
+    <title>KAMIZEN TACTICAL - NEURO-SYNCHRONIZER</title>
     <style>
         :root {
             --bg: #020406;
-            --card: #0d1117;
             --primary: #00d4ff;
             --success: #00ff88;
             --danger: #ff3e3e;
@@ -17,7 +16,7 @@
         * { box-sizing: border-box; cursor: crosshair; }
         body {
             margin: 0;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg);
             color: var(--text);
             display: flex;
@@ -28,7 +27,7 @@
             text-transform: uppercase;
         }
 
-        /* Scanline Effect */
+        /* Scanline HUD Effect */
         .scanline {
             width: 100%; height: 2px; background: rgba(0, 212, 255, 0.05);
             position: fixed; top: 0; z-index: 999; pointer-events: none;
@@ -38,7 +37,7 @@
 
         #hud-container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
             height: 100vh;
             padding: 20px;
             display: flex;
@@ -46,7 +45,6 @@
             position: relative;
         }
 
-        /* Top Bar */
         .top-bar {
             display: flex; justify-content: space-between;
             font-size: 12px; color: var(--primary);
@@ -55,81 +53,92 @@
             letter-spacing: 2px;
         }
 
-        /* Main Content Area */
         #app {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: relative;
         }
 
         .card {
-            background: rgba(13, 17, 23, 0.8);
+            background: rgba(13, 17, 23, 0.9);
             border: var(--border);
             padding: 40px;
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             text-align: center;
             position: relative;
-            box-shadow: 0 0 50px rgba(0, 212, 255, 0.1);
-        }
-        .card::before {
-            content: ""; position: absolute; top: -2px; left: -2px; width: 20px; height: 20px;
-            border-top: 3px solid var(--primary); border-left: 3px solid var(--primary);
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.05);
         }
 
-        /* Biometric Circle */
-        .breath-circle {
-            width: 220px; height: 220px;
-            border-radius: 50%;
-            margin: 20px auto;
-            border: 1px solid var(--primary);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
+        /* --- CIRCULO RESPIRATORIO CIENTÍFICO --- */
+        .breath-container {
             position: relative;
-        }
-        .pulse { animation: pulse-animation 4s infinite ease-in-out; }
-        @keyframes pulse-animation {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
-            50% { transform: scale(1.1); box-shadow: 0 0 40px var(--primary); border-width: 4px; }
+            width: 300px;
+            height: 300px;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Buttons */
+        .breath-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        /* Animación regulada: 5.5s Inhala, 5.5s Exhala (Ciclo de 11s) */
+        .breath-active {
+            animation: breathe-cycle 11s infinite ease-in-out;
+        }
+
+        @keyframes breathe-cycle {
+            0%, 100% { transform: scale(0.4); opacity: 0.2; border-color: var(--primary); }
+            50% { transform: scale(1.1); opacity: 1; border-color: var(--success); box-shadow: 0 0 30px var(--success); }
+        }
+
+        .breath-instruction {
+            position: absolute;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: var(--text);
+            z-index: 10;
+        }
+
+        /* --- BOTONES TÁCTICOS --- */
         .btn-tactical {
-            background: rgba(0, 212, 255, 0.1);
+            background: transparent;
             border: 1px solid var(--primary);
             color: var(--primary);
             padding: 15px 30px;
             font-family: inherit;
             font-weight: bold;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             cursor: pointer;
-            margin-top: 20px;
             transition: 0.3s;
+            margin: 5px;
         }
-        .btn-tactical:hover { background: var(--primary); color: var(--bg); box-shadow: 0 0 20px var(--primary); }
+        .btn-tactical:hover { background: var(--primary); color: var(--bg); }
 
-        /* Floating Telemetry Panel */
         #dashboard {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 250px;
-            background: rgba(2, 4, 6, 0.9);
+            width: 280px;
+            background: rgba(2, 4, 6, 0.95);
             border: var(--border);
             padding: 15px;
-            font-size: 10px;
+            font-size: 11px;
             border-left: 4px solid var(--primary);
         }
 
-        .blink { animation: blinker 1s linear infinite; }
-        @keyframes blinker { 50% { opacity: 0; } }
-
-        #options-grid {
-            display: grid; gap: 10px; width: 100%; margin-top: 20px;
-        }
+        .status-active { color: var(--success); animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body>
@@ -137,33 +146,27 @@
 
     <div id="hud-container">
         <div class="top-bar">
-            <div>[ UNIT: 736-SFS-OP ]</div>
-            <div class="blink" style="color:var(--success)">● NEURO-LINK: ACTIVE</div>
+            <div>UNIT: 736-SFS-OPERATOR</div>
+            <div class="status-active">● NEURO-LINK: ONLINE</div>
             <div id="clock">00:00:00</div>
         </div>
 
         <div id="app">
-            <!-- PANTALLA INICIAL DE CALIBRACIÓN -->
-            <div class="card" id="init-card">
-                <h2 style="color:var(--primary); margin:0;">SYSTEM READINESS</h2>
-                <p style="color:var(--dim); font-size:12px;">Sincronización de Sensores Biométricos Virtuales</p>
-                
-                <div class="breath-circle pulse">
-                    <span style="font-size:10px;">AWAITING COMMAND</span>
-                </div>
-
-                <button class="btn-tactical" onclick="startSystem()">INICIAR MISIÓN 01</button>
+            <!-- El contenido será inyectado por engine.js -->
+            <div class="card">
+                <h1 style="color:var(--primary)">KAMIZEN AI SYSTEM</h1>
+                <p>Initializing Scientific Neuro-Priming Protocols...</p>
+                <button class="btn-tactical" onclick="KamizenEngine.init()">LOAD MISSION DATA</button>
             </div>
         </div>
 
-        <!-- DASHBOARD DE TELEMETRÍA (ACTUALIZADO POR ENGINE.JS) -->
         <div id="dashboard">
-            <p style="margin:0 0 10px 0; border-bottom:1px solid #333; padding-bottom:5px;">LIVE TELEMETRY</p>
+            <p style="border-bottom: 1px solid #333; padding-bottom:5px; margin-bottom:10px;">BIO-SENSORS (PRE-VR)</p>
             <div id="telemetry-content">
-                CONEXIÓN: ESTABLE<br>
-                CARGA COGNITIVA: 0%<br>
-                ESTRÉS: NOMINAL<br>
-                JITTER: 0.0ms
+                HRV: INITIALIZING...<br>
+                STRESS: CALIBRATING...<br>
+                ROE: 100%<br>
+                JITTER: 0.00
             </div>
         </div>
     </div>
@@ -171,33 +174,20 @@
     <!-- SCRIPTS -->
     <script src="/static/js/engine.js"></script>
     <script>
-        // Reloj del Sistema
         function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toTimeString().split(' ')[0];
+            document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0];
         }
         setInterval(updateClock, 1000);
 
-        // Iniciar el motor
-        function startSystem() {
-            if (typeof KamizenEngine !== 'undefined') {
-                document.getElementById('init-card').style.display = 'none';
-                KamizenEngine.startMission(1);
-            } else {
-                alert("ERROR: ENGINE.JS NO DETECTADO");
-            }
-        }
-
-        // Esta función será llamada por engine.js para actualizar el HUD
+        // Interfaz de telemetría para engine.js
         window.updateHUD = function(data) {
-            const content = document.getElementById('telemetry-content');
-            content.innerHTML = `
-                HEART RATE: ${data.pulseSim || 72} BPM<br>
-                JITTER: ${data.microTremor ? data.microTremor.toFixed(2) : 0}%<br>
+            document.getElementById('telemetry-content').innerHTML = `
+                HRV STABILITY: ${data.pulseSim || 0}%<br>
+                VAGAL TONE: ${data.cognitiveLoad || 0}<br>
                 ROE COMPLIANCE: ${data.roeCompliance || 100}%<br>
-                COG. LOAD: ${data.cognitiveLoad ? data.cognitiveLoad.toFixed(1) : 0}%
+                MICRO-TREMOR: ${data.microTremor ? data.microTremor.toFixed(3) : 0}
             `;
-        }
+        };
     </script>
 </body>
 </html>
