@@ -4,72 +4,100 @@ import time
 from flask import Flask, jsonify, request, send_file, send_from_directory
 from flask_cors import CORS
 
-# Intentar importar el motor de reportes
+# --- INTEGRATION: MAYKAMI REPORT ENGINE ---
 try:
-    from reports import KamizenReport
+    # Changed from KamizenReport to reflect the new naming convention
+    from reports import MaykaMiReport
 except ImportError:
-    KamizenReport = None
+    MaykaMiReport = None
 
 app = Flask(__name__)
 CORS(app)
 
-# Rutas absolutas basadas en tu estructura actual
+# Absolute path configurations
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# El JSON está en la raíz según tu lista
+# Data file located in the root directory
 DATA_FILE = os.path.join(BASE_DIR, 'missions_tactical.json')
-# La carpeta para los PDFs generados
-REPORTS_DIR = "/tmp/reports"
+# Temporary directory for generated tactical reports
+REPORTS_DIR = os.path.join(BASE_DIR, "tmp_reports")
 
 if not os.path.exists(REPORTS_DIR):
     os.makedirs(REPORTS_DIR)
 
-# --- RUTAS DE NAVEGACIÓN ---
+# --- NAVIGATION ROUTES ---
 
 @app.route('/')
 def index():
-    """Sirve session.html como la página de inicio desde static."""
+    """Serves session.html as the primary tactical interface."""
     return send_from_directory(os.path.join(BASE_DIR, 'static'), 'session.html')
 
-@app.route('/static/js/<path:filename>')
-def serve_js(filename):
-    """Sirve el motor JS desde su ubicación actual."""
-    return send_from_directory(os.path.join(BASE_DIR, 'static', 'js'), filename)
+@app.route('/static/<path:path>')
+def serve_static(path):
+    """Serves all static assets (JS, CSS, Images)."""
+    return send_from_directory(os.path.join(BASE_DIR, 'static'), path)
 
-# --- API DE DATOS ---
+# --- TACTICAL DATA API ---
 
 @app.route('/api/missions', methods=['GET'])
 def get_missions():
+    """Retrieves tactical mission data for the Neuro-Engine."""
     try:
-        # Buscamos el JSON en la raíz
         if os.path.exists(DATA_FILE):
             with open(DATA_FILE, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             return jsonify(data)
         else:
-            # Fallback si el archivo no está en la raíz
-            return jsonify({"missions": [{"id": 1, "b": [{"t":"v","tx":{"en":"SISTEMA ONLINE - JSON NO DETECTADO"}}]}]})
+            # Emergency Fallback Mission if JSON is missing
+            return jsonify({
+                "missions": [{
+                    "id": "EMERGENCY_LINK",
+                    "cat": "SYSTEM_RESTORE",
+                    "b": [{"t": "v", "tx": {"en": "TACTICAL DATA LINK OFFLINE. CHECK MISSIONS_TACTICAL.JSON"}}]
+                }]
+            })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/state', methods=['POST'])
 def save_state():
+    """Processes session telemetry and generates a PDF report."""
     try:
         session_data = request.json
-        report_filename = f"Asesoria_Tactical_{int(time.time())}.pdf"
+        # Filename based on timestamp for uniqueness
+        report_filename = f"MaykaMi_Readiness_{int(time.time())}.pdf"
         report_path = os.path.join(REPORTS_DIR, report_filename)
         
-        if KamizenReport:
-            report_engine = KamizenReport(operator_id="736-SFS-OPERATOR")
+        if MaykaMiReport:
+            # Specialized Advisor logic: Direct, professional, non-authoritative
+            report_engine = MaykaMiReport(operator_id="736-SFS-OPERATOR")
             report_engine.generate_pdf(session_data, report_path)
-            return jsonify({"status": "success", "report_id": report_filename})
-        return jsonify({"status": "error", "message": "Motor de Reportes No Encontrado"}), 500
+            return jsonify({
+                "status": "success", 
+                "report_id": report_filename,
+                "download_url": f"/api/download-report/{report_filename}"
+            })
+        
+        return jsonify({
+            "status": "error", 
+            "message": "Report Engine (reports.py) not detected."
+        }), 501
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/download-report/<report_id>')
 def download(report_id):
-    return send_file(os.path.join(REPORTS_DIR, report_id), as_attachment=True)
+    """Securely serves generated PDF reports."""
+    file_path = os.path.join(REPORTS_DIR, report_id)
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
+    return jsonify({"error": "File not found"}), 404
+
+# --- SYSTEM INITIALIZATION ---
 
 if __name__ == '__main__':
+    # Deployment configuration for environments like Render
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    print(f"--- MAYKAMI NEURO-ENGINE [AL CIELO] ---")
+    print(f"STATUS: Operational")
+    print(f"PORT: {port}")
+    app.run(host='0.0.0.0', port=port, debug=False)
