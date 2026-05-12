@@ -1,290 +1,222 @@
 /**
  * MAYKAMI NEURO-ENGINE - "AL CIELO"
- * Specialized in Scientific Neuro-Priming & Tactical Synchronization.
- * 11s Breathing Cycle: 5.5s Inhale / 5.5s Exhale.
- * LANGUAGE: ENGLISH ONLY.
+ * Versión 3.0 - Tactical Synchronization & Anti-Pattern Logic
+ * Enfoque: Disciplina Científica, Psicológica y Táctica.
  */
 
 const MaykaMiEngine = {
-    currentMissionIndex: 0,
-    currentStepIndex: 0,
     missionData: null,
-    currentStepStart: 0,
-    isTrainingActive: false,
-
-    adaptiveState: {
-        vagalTone: 60,
-        excellenceScore: 0,
-        stressResistance: 1.0,
-        totalSuccesses: 0,
-        totalFailures: 0
-    },
-
-    telemetry: {
-        preSessionBalance: 0,
-        postSessionReadiness: 0,
-        averageLatency: 0,
-        decisionAccuracy: [],
-    },
-
+    currentStepIndex: 0,
+    sessionScores: [],
+    totalSteps: 10, // Los 10 dominios obligatorios
+    
+    // Configuración de Voz Táctica
     voice: {
         synth: window.speechSynthesis,
-        isSpeaking: false,
-        pitch: 0.85, 
-        rate: 0.85  
+        rate: 0.88,
+        pitch: 0.95,
+        lang: 'en-US'
     },
 
     async init() {
-        console.log("MAYKAMI TERMINAL: READY.");
         try {
             const res = await fetch('/api/missions');
-            this.missionData = await res.json();
+            const data = await res.json();
             
-            this.telemetry.preSessionBalance = 55 + Math.random() * 15;
-            this.renderModuleSelector();
-            this.startTelemetryLoop();
+            // ALEATORIEDAD CIENTÍFICA: Mezclar los dominios
+            this.missionData = this.shuffle([...data.missions]);
             
-            this.speak("System initialized. Welcome to MaykaMi Neuro-Priming. Please select your tactical domain to begin synchronization.");
+            // Limpiar interfaz e iniciar
+            this.startSession();
         } catch (e) {
-            console.error("DATA ERROR:", e);
+            console.error("CRITICAL SYSTEM ERROR:", e);
+            alert("DATA LINK FAILURE. RECHECK SERVER.");
         }
     },
 
-    speak(text) {
-        if (this.voice.synth.speaking) this.voice.synth.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US';
-        utterance.pitch = this.voice.pitch;
-        utterance.rate = this.voice.rate;
-        this.voice.synth.speak(utterance);
+    // Algoritmo de mezcla Fisher-Yates para aleatoriedad total
+    shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
     },
 
-    renderModuleSelector() {
-        const container = document.getElementById("app");
-        if (!container) return;
-        
-        let html = `
-            <div class="card" style="max-width:850px;">
-                <h2 style="color:var(--primary); margin-bottom:5px;">TACTICAL DOMAIN SELECTOR</h2>
-                <p style="font-size:10px; margin-bottom:20px; opacity:0.8;">OPERATOR ACCESS - 10 NEURAL DOMAINS AVAILABLE</p>
-                <div id="options-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-        `;
-
-        this.missionData.missions.forEach((m, index) => {
-            html += `
-                <button class="btn-tactical" style="text-align:left; font-size:11px;" onclick="MaykaMiEngine.startMissionByIndex(${index})">
-                    <span style="color:var(--primary)">[DOMAIN ${index + 1}]</span> ${m.cat || m.focus}
-                    <span style="display:block; font-size:9px; color:var(--success); margin-top:4px;">FOCUS: ${this.getScientificFocus(index)}</span>
-                </button>
-            `;
-        });
-
-        html += `</div></div>`;
-        container.innerHTML = html;
-    },
-
-    getScientificFocus(index) {
-        const focuses = [
-            "COHERENCE & VAGAL TONE", "PREFRONTAL CORTEX STIM", "ROE JUDGMENT ACCURACY",
-            "MICRO-TREMOR SUPPRESSION", "SITUATIONAL LATENCY", "COGNITIVE LOAD SHIFTING",
-            "MOTOR-NEURON STABILITY", "SYNAPTIC SYNCHRONIZATION", "VISUAL FIELD RETENTION",
-            "EXECUTIVE DECISION EXCELLENCE"
-        ];
-        return focuses[index] || "NEURAL CONDITIONING";
-    },
-
-    startMissionByIndex(index) {
-        this.currentMissionIndex = index;
+    startSession() {
         this.currentStepIndex = 0;
-        this.isTrainingActive = true;
-        this.executeStep();
+        this.sessionScores = [];
+        this.speak("System online. Initializing neural synchronization. Focus on the breathing cycle.");
+        this.runScientificBreathing(22); // 2 ciclos de 11s para calibrar
     },
 
-    executeStep() {
-        const mission = this.missionData.missions[this.currentMissionIndex];
-        const step = mission.b[this.currentStepIndex];
-
-        if (!step) {
-            this.handleProgression();
-            return;
-        }
-
-        switch (step.t) {
-            case 'v': this.renderPhaseText(step.tx.en); break;
-            case 'breath_auto': this.runScientificBreathing(step); break;
-            case 'd': this.renderAssessment(step); break;
-            case 'r': this.showPhaseResult(step); break;
-            default: this.nextStep();
-        }
-    },
-
-    renderPhaseText(text) {
-        const container = document.getElementById("app");
-        container.innerHTML = `
-            <div class="card">
-                <h3 style="color:var(--primary)">PROTOCOL ${this.currentMissionIndex + 1}</h3>
-                <p style="font-size:1.5em; line-height:1.4;">${text}</p>
-                <button class="btn-tactical" onclick="MaykaMiEngine.nextStep()">CONTINUE</button>
-            </div>
-        `;
-        this.speak(text);
-    },
-
-    // ==========================================
-    // 🌬️ SCIENTIFIC BREATHING (Strict 11s Cycle)
-    // ==========================================
-    runScientificBreathing(step) {
-        let timeLeft = step.d; 
+    /**
+     * CICLO RESPIRATORIO CIENTÍFICO (11 Segundos)
+     * Controla Voz, Círculo y Texto en sincronía absoluta.
+     */
+    runScientificBreathing(durationSeconds) {
+        let timeLeft = durationSeconds;
         const container = document.getElementById("app");
         
-        this.speak("Synchronize your breathing with the circle. Inhale as it expands, exhale as it contracts.");
-
-        const interval = setInterval(() => {
-            const cyclePos = timeLeft % 11;
-            // 5.5s for Inhale (Expanding), 5.5s for Exhale (Contracting)
-            const isExhaling = cyclePos <= 5.5; 
-            const instruction = isExhaling ? "EXHALE" : "INHALE";
-            
-            container.innerHTML = `
-                <div class="card">
-                    <h3>NEURAL SYNC: ${this.getScientificFocus(this.currentMissionIndex)}</h3>
-                    <div class="breath-container" style="display:flex; justify-content:center; align-items:center; height:300px; position:relative;">
-                        <div class="breath-circle ${!isExhaling ? 'expand' : 'contract'}" 
-                             style="width: 200px; height: 200px; border: 4px solid var(--primary); border-radius: 50%; 
-                             transition: transform 5.5s linear; transform: scale(${!isExhaling ? 1.5 : 0.6});"></div>
-                        <div class="breath-instruction" style="position:absolute;">
-                            <h2 style="margin:0; font-size: 2.5em; color:white; text-shadow: 0 0 10px var(--primary);">${instruction}</h2>
-                            <p style="color:var(--primary)">${timeLeft}s REMAINING</p>
-                        </div>
+        container.innerHTML = `
+            <div class="card" style="background:transparent; border:none; box-shadow:none;">
+                <div class="breath-container">
+                    <div id="visual-circle" class="breath-circle"></div>
+                    <div class="breath-instruction">
+                        <h1 id="breath-label" style="font-size:3.5rem; margin:0;">SYNC</h1>
+                        <p id="breath-timer" style="color:var(--primary); font-family:monospace; font-size:1.5rem;"></p>
                     </div>
                 </div>
-            `;
+            </div>
+        `;
 
-            // Audio cues for the cycle transitions
-            if (cyclePos === 11 || cyclePos === 5.5) {
-                this.speak(isExhaling ? "Inhale deep" : "Exhale slowly");
+        const circle = document.getElementById("visual-circle");
+        const label = document.getElementById("breath-label");
+        const timerDisplay = document.getElementById("breath-timer");
+
+        const updateCycle = () => {
+            const cyclePos = timeLeft % 11; // Posición dentro del ciclo de 11s
+
+            // INHALAR: de 11 a 5.6 (5.5 segundos)
+            if (cyclePos > 5.5 || cyclePos === 0) {
+                label.innerText = "INHALE";
+                label.style.color = "var(--success)";
+                circle.style.transform = "scale(1.3)";
+                circle.style.borderColor = "var(--success)";
+                circle.style.boxShadow = "0 0 50px var(--success)";
+                if (cyclePos === 11 || (cyclePos === 0 && timeLeft > 0)) this.speak("Inhale");
+            } 
+            // EXHALAR: de 5.5 a 0.1 (5.5 segundos)
+            else {
+                label.innerText = "EXHALE";
+                label.style.color = "var(--primary)";
+                circle.style.transform = "scale(0.6)";
+                circle.style.borderColor = "var(--primary)";
+                circle.style.boxShadow = "0 0 20px var(--primary)";
+                if (Math.abs(cyclePos - 5.5) < 0.1) this.speak("Exhale");
             }
 
-            if (timeLeft-- <= 0) {
-                clearInterval(interval);
-                this.nextStep();
+            timerDisplay.innerText = `${timeLeft}s`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(breathingInterval);
+                this.renderAssessment();
             }
-        }, 1000);
+            timeLeft--;
+        };
+
+        const breathingInterval = setInterval(updateCycle, 1000);
+        updateCycle(); // Ejecución inmediata
     },
 
-    renderAssessment(step) {
-        const container = document.getElementById("app");
-        this.currentStepStart = performance.now();
-        this.speak(step.q.en);
+    /**
+     * RENDERIZADO DE EVALUACIÓN TÁCTICA
+     * Escoge una de las 4 variantes y desordena las 4 opciones.
+     */
+    renderAssessment() {
+        const domain = this.missionData[this.currentStepIndex];
+        // Escoger 1 escenario aleatorio de los 4 disponibles en el dominio
+        const scenario = domain.scenarios[Math.floor(Math.random() * domain.scenarios.length)];
+        // Mezclar las opciones de respuesta para que la posición no sea recordada
+        const shuffledOptions = this.shuffle([...scenario.options]);
 
+        const container = document.getElementById("app");
         container.innerHTML = `
             <div class="card">
-                <p style="color:var(--danger); font-size:10px;">ASSESSING DECISION PATTERN...</p>
-                <p style="font-size:1.3em; margin:20px 0;">${step.q.en}</p>
-                <div id="options-grid" style="display:grid; gap:10px;">
-                    ${step.op.map((opt, i) => `
-                        <button class="btn-tactical" style="width:100%; text-align:left;" onclick="MaykaMiEngine.processDecision(${i}, ${step.c})">
-                            ${opt}
+                <div style="text-align:left; font-size:12px; color:var(--primary); margin-bottom:15px; border-bottom:1px solid #333;">
+                    DOMAIN 0${this.currentStepIndex + 1}: ${domain.focus}
+                </div>
+                <h2 style="margin-bottom:30px; line-height:1.4;">${scenario.q}</h2>
+                <div id="options-grid">
+                    ${shuffledOptions.map(opt => `
+                        <button class="btn-tactical" onclick="MaykaMiEngine.processDecision(${opt.pts})">
+                            ${opt.text}
                         </button>
                     `).join('')}
                 </div>
+                <div style="margin-top:20px; font-size:10px; opacity:0.5;">
+                    NEURAL PROCESSING REQUIRED - SELECT OPTIMAL RESPONSE
+                </div>
             </div>
         `;
+
+        this.speak(scenario.q);
+        
+        // Actualizar HUD de telemetría (Simulación de carga cognitiva)
+        if (window.updateHUD) {
+            window.updateHUD({
+                pulseSim: Math.floor(Math.random() * (90 - 60) + 60),
+                cognitiveLoad: (this.currentStepIndex + 1) * 10,
+                roeCompliance: 100,
+                microTremor: (Math.random() * 0.05).toFixed(3)
+            });
+        }
     },
 
-    processDecision(choice, correct) {
-        const latency = (performance.now() - this.currentStepStart) / 1000;
-        const success = choice === correct;
-
-        this.telemetry.decisionAccuracy.push(success);
-        this.telemetry.averageLatency = this.telemetry.averageLatency === 0 ? latency : (this.telemetry.averageLatency + latency) / 2;
+    processDecision(points) {
+        this.sessionScores.push(points);
         
-        if (success) {
-            this.adaptiveState.vagalTone += 2;
-            this.speak("Protocol met.");
-        } else {
-            this.adaptiveState.vagalTone -= 5;
-            this.speak("Protocol breach.");
-        }
+        // Retroalimentación auditiva según desempeño
+        if (points === 3) this.speak("Optimal decision.");
+        else if (points === 0) this.speak("Critical error detected.");
+        else this.speak("Acceptable protocol.");
 
+        this.currentStepIndex++;
+
+        if (this.currentStepIndex < this.totalSteps) {
+            // Entre cada pregunta, 11s de respiración para resetear el sistema nervioso
+            this.runScientificBreathing(11);
+        } else {
+            this.finishSession();
+        }
+    },
+
+    async finishSession() {
+        this.speak("Session complete. Calculating neural readiness report.");
+        
+        const finalData = {
+            timestamp: new Date().toISOString(),
+            scores: this.sessionScores,
+            average: this.sessionScores.reduce((a, b) => a + b, 0) / this.totalSteps,
+            operator_id: "736-SFS-OPERATOR"
+        };
+
+        // Enviar a la API para generar PDF
+        try {
+            const res = await fetch('/api/state', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(finalData)
+            });
+            const result = await res.json();
+            
+            this.renderFinalUI(result.download_url, finalData.average);
+        } catch (e) {
+            console.error("Report generation failed.");
+        }
+    },
+
+    renderFinalUI(downloadUrl, avg) {
         const container = document.getElementById("app");
+        const performance = avg >= 2.5 ? "ELITE" : avg >= 1.5 ? "OPERATIONAL" : "RE-TRAINING REQUIRED";
+        
         container.innerHTML = `
             <div class="card">
-                <h2 style="color:${success ? 'var(--success)' : 'var(--danger)'}">
-                    ${success ? 'PROTOCOL MET' : 'PROTOCOL BREACH'}
-                </h2>
-                <p>NEURAL LATENCY: ${latency.toFixed(3)}s</p>
-            </div>
-        `;
-        setTimeout(() => this.nextStep(), 1500);
-    },
-
-    showPhaseResult(step) {
-        this.speak("Phase complete.");
-        document.getElementById("app").innerHTML = `
-            <div class="card">
-                <h2 style="color:var(--success)">DATA ACQUIRED</h2>
-                <p>${step.tx.en}</p>
-                <p>COGNITIVE GAIN: +${step.p || 100} PTS</p>
-                <button class="btn-tactical" onclick="MaykaMiEngine.nextStep()">NEXT PHASE</button>
+                <h1 style="color:var(--success)">READINESS: ${performance}</h1>
+                <p>NEURAL SYNC AVERAGE: ${(avg * 33.3).toFixed(2)}%</p>
+                <hr>
+                <button class="btn-tactical" onclick="window.location.href='${downloadUrl}'">DOWNLOAD PDF REPORT</button>
+                <button class="btn-tactical" onclick="location.reload()">RESTART PROTOCOL</button>
             </div>
         `;
     },
 
-    nextStep() {
-        this.currentStepIndex++;
-        this.executeStep();
-    },
-
-    handleProgression() {
-        this.currentMissionIndex++;
-        if (this.currentMissionIndex >= this.missionData.missions.length) {
-            this.renderFinalReport();
-        } else {
-            this.currentStepIndex = 0;
-            this.executeStep();
-        }
-    },
-
-    renderFinalReport() {
-        const acc = (this.telemetry.decisionAccuracy.filter(x => x).length / this.telemetry.decisionAccuracy.length) * 100 || 0;
-        this.telemetry.postSessionReadiness = Math.min(100, Math.max(0, acc - (this.telemetry.averageLatency * 2)));
-        
-        this.speak("Full cycle complete. Tactical readiness analysis ready.");
-
-        document.getElementById("app").innerHTML = `
-            <div class="card" style="text-align:left">
-                <h2 style="color:var(--primary); text-align:center;">READINESS ANALYSIS</h2>
-                <hr style="border-color:#333">
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                    <div>
-                        <p style="font-size:10px;">PRE-SESSION</p>
-                        <h3>BALANCE: ${this.telemetry.preSessionBalance.toFixed(1)}%</h3>
-                    </div>
-                    <div>
-                        <p style="font-size:10px;">POST-SESSION</p>
-                        <h3 style="color:var(--success)">READY: ${this.telemetry.postSessionReadiness.toFixed(1)}%</h3>
-                    </div>
-                </div>
-                <hr style="border-color:#333">
-                <p><b>DECISION ACCURACY:</b> ${acc.toFixed(1)}%</p>
-                <p><b>NEURAL LATENCY:</b> ${this.telemetry.averageLatency.toFixed(3)}s</p>
-                <p style="font-size:11px; margin-top:15px; opacity:0.7;">
-                    <b>ADVISOR NOTE:</b> 10-minute priming complete. Target Excellence Level achieved.
-                </p>
-                <button class="btn-tactical" style="width:100%" onclick="MaykaMiEngine.renderModuleSelector()">RESTART SYSTEM</button>
-            </div>
-        `;
-    },
-
-    startTelemetryLoop() {
-        setInterval(() => {
-            const loadEl = document.getElementById('val-load');
-            const stabEl = document.getElementById('val-stab');
-            if (loadEl) loadEl.innerText = (60 + Math.random() * 10).toFixed(0);
-            if (stabEl) stabEl.innerText = this.adaptiveState.vagalTone;
-        }, 2000);
+    speak(txt) {
+        this.voice.synth.cancel(); // Detiene cualquier voz previa
+        const u = new SpeechSynthesisUtterance(txt);
+        u.lang = this.voice.lang;
+        u.rate = this.voice.rate;
+        u.pitch = this.voice.pitch;
+        this.voice.synth.speak(u);
     }
 };
-
-document.addEventListener("DOMContentLoaded", () => MaykaMiEngine.init());
