@@ -1,84 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>MAYKAMI TACTICAL - NEURO-SYNCHRONIZER</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AL CIELO - MaykaMi Neuro-Engine</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg: #020406;
-            --primary: #00d4ff;
-            --success: #00ff88;
+            --bg-color: #050505;
+            --card-bg: #0f0f0f;
+            --primary: #00d4ff; /* Blue Tactical */
+            --success: #00ff88; /* Green Vagal */
             --danger: #ff3e3e;
-            --text: #e6edf3;
-            --border: 1px solid #30363d;
+            --text: #e0e0e0;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-        * { box-sizing: border-box; cursor: crosshair; }
+
         body {
             margin: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--bg);
+            padding: 0;
+            background-color: var(--bg-color);
             color: var(--text);
+            font-family: var(--font-main);
+            overflow: hidden; /* Evita scroll durante el entrenamiento */
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            text-transform: uppercase;
-        }
-
-        /* Scanline HUD Effect */
-        .scanline {
-            width: 100%; height: 2px; background: rgba(0, 212, 255, 0.05);
-            position: fixed; top: 0; z-index: 999; pointer-events: none;
-            animation: scan 4s linear infinite;
-        }
-        @keyframes scan { from { top: 0; } to { top: 100vh; } }
-
-        #hud-container {
-            width: 100%;
-            max-width: 1200px;
             height: 100vh;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
         }
 
-        .top-bar {
-            display: flex; justify-content: space-between;
-            font-size: 12px; color: var(--primary);
-            border-bottom: var(--border);
-            padding-bottom: 10px;
-            letter-spacing: 2px;
+        /* HUD Background Overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
         }
 
         #app {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.5s ease;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            text-align: center;
         }
 
         .card {
-            background: rgba(13, 17, 23, 0.9);
-            border: var(--border);
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 12px;
             padding: 40px;
-            width: 100%;
-            max-width: 750px;
-            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             position: relative;
-            box-shadow: 0 0 50px rgba(0, 212, 255, 0.05);
         }
 
-        /* --- SCIENTIFIC BREATHING CIRCLE --- */
+        /* --- CONTENEDOR DE RESPIRACIÓN (ELIMINA SOLAPAMIENTO) --- */
         .breath-container {
             position: relative;
-            width: 300px;
-            height: 300px;
-            margin: 30px auto;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -88,127 +72,120 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            border: 3px solid var(--primary);
+            border: 4px solid var(--primary);
             border-radius: 50%;
-            opacity: 0.5;
-        }
-
-        /* Regulated Animation: 5.5s Inhale, 5.5s Exhale (11s Cycle) */
-        .breath-active {
-            animation: breathe-cycle 11s infinite ease-in-out;
-        }
-
-        @keyframes breathe-cycle {
-            0%, 100% { transform: scale(0.4); opacity: 0.2; border-color: var(--primary); }
-            50% { transform: scale(1.2); opacity: 1; border-color: var(--success); box-shadow: 0 0 40px var(--success); }
+            transition: transform 5.5s ease-in-out, border-color 0.5s, box-shadow 0.5s;
+            z-index: 1;
         }
 
         .breath-instruction {
-            position: absolute;
-            font-weight: bold;
-            letter-spacing: 3px;
-            color: var(--text);
+            position: relative;
             z-index: 10;
+            pointer-events: none; /* No interfiere con clics */
         }
 
-        /* --- TACTICAL INTERFACE --- */
-        .btn-tactical {
-            background: rgba(0, 212, 255, 0.05);
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 15px 30px;
-            font-family: inherit;
-            font-weight: bold;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin: 8px;
-            text-transform: uppercase;
-        }
-        .btn-tactical:hover { 
-            background: var(--primary); 
-            color: var(--bg); 
-            box-shadow: 0 0 20px var(--primary);
-        }
-
-        #dashboard {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 300px;
-            background: rgba(2, 4, 6, 0.95);
-            border: var(--border);
-            padding: 15px;
-            font-size: 11px;
-            border-left: 4px solid var(--primary);
-            z-index: 100;
-        }
-
+        /* --- BOTONES TÁCTICOS --- */
         #options-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 15px;
             margin-top: 20px;
         }
 
-        .status-active { color: var(--success); animation: blink 1.5s infinite; }
-        @keyframes blink { 50% { opacity: 0.3; } }
-        
-        hr { border: 0; border-top: 1px solid #333; margin: 15px 0; }
+        .btn-tactical {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid #444;
+            padding: 18px;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-tactical:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--primary);
+            padding-left: 25px;
+        }
+
+        .btn-tactical::before {
+            content: ">>";
+            margin-right: 10px;
+            color: var(--primary);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .btn-tactical:hover::before {
+            opacity: 1;
+        }
+
+        /* --- TELEMETRÍA (HUD) --- */
+        .telemetry {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 10px;
+            color: var(--primary);
+            text-align: left;
+            pointer-events: none;
+        }
+
+        /* --- ANIMACIÓN DE ENTRADA --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card { animation: fadeIn 0.5s ease-out; }
+
     </style>
 </head>
 <body>
-    <div class="scanline"></div>
 
-    <div id="hud-container">
-        <div class="top-bar">
-            <div>OPERATOR: MAYKAMI-TACTICAL-CORE</div>
-            <div class="status-active">● NEURAL-LINK: STABLE</div>
-            <div id="clock">00:00:00</div>
-        </div>
+    <!-- Telemetría de fondo (Decorativo/Inmersivo) -->
+    <div class="telemetry">
+        [ SYSTEM: MAYKAMI NEURO-ENGINE ]<br>
+        [ STATUS: MONITORING VAGAL TONE ]<br>
+        [ LINK: ENCRYPTED ]<br>
+        <span id="hud-stats">SCANNING...</span>
+    </div>
 
-        <div id="app">
-            <!-- Initial content before Engine takes over -->
-            <div class="card">
-                <h1 style="color:var(--primary); margin-bottom: 10px;">MAYKAMI NEURO-ENGINE</h1>
-                <p style="opacity: 0.7; font-size: 0.9em;">System Ready for Tactical Synchronization</p>
-                <hr>
-                <button class="btn-tactical" onclick="MaykaMiEngine.init()">INITIALIZE PROTOCOLS</button>
+    <div id="app">
+        <!-- Pantalla de Inicio -->
+        <div class="card">
+            <h1 style="color: var(--primary); letter-spacing: 4px; margin-bottom: 5px;">AL CIELO</h1>
+            <p style="font-size: 12px; margin-bottom: 30px; opacity: 0.7;">ADVISORY NEURO-TACTICAL SYSTEM</p>
+            
+            <div style="text-align: left; margin-bottom: 30px; font-size: 14px; line-height: 1.6;">
+                <p><i class="fas fa-check-circle" style="color:var(--success)"></i> Disciplina de respiración científica.</p>
+                <p><i class="fas fa-check-circle" style="color:var(--success)"></i> Aleatoriedad cognitiva contra patrones.</p>
+                <p><i class="fas fa-check-circle" style="color:var(--success)"></i> Evaluación de toma de decisiones en crisis.</p>
             </div>
-        </div>
 
-        <div id="dashboard">
-            <p style="border-bottom: 1px solid #333; padding-bottom:5px; margin-bottom:10px; color: var(--primary);">NEURAL TELEMETRY</p>
-            <div id="telemetry-content">
-                HRV STABILITY: CALIBRATING...<br>
-                VAGAL TONE: SCANNING...<br>
-                ROE COMPLIANCE: 100%<br>
-                MICRO-TREMOR: 0.000
-            </div>
+            <button class="btn-tactical" style="text-align:center;" onclick="MaykaMiEngine.init()">
+                INITIALIZE PROTOCOL
+            </button>
         </div>
     </div>
 
-    <!-- CORE ENGINE -->
+    <!-- Scripts de Motor -->
     <script src="/static/js/engine.js"></script>
     <script>
-        // Real-time HUD Clock
-        function updateClock() {
-            document.getElementById('clock').innerText = new Date().toTimeString().split(' ')[0];
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // Interface Bridge for engine.js Telemetry
+        // Función para actualizar HUD de telemetría dinámicamente
         window.updateHUD = function(data) {
-            const telemetry = document.getElementById('telemetry-content');
-            if (telemetry) {
-                telemetry.innerHTML = `
-                    HRV STABILITY: ${data.pulseSim || 0}%<br>
-                    VAGAL TONE: ${data.cognitiveLoad || 0}<br>
-                    ROE COMPLIANCE: ${data.roeCompliance || 100}%<br>
-                    MICRO-TREMOR: ${data.microTremor ? parseFloat(data.microTremor).toFixed(3) : "0.000"}
-                `;
-            }
+            const hud = document.getElementById("hud-stats");
+            hud.innerHTML = `
+                PULSE: ${data.pulseSim} BPM<br>
+                COGNITIVE LOAD: ${data.cognitiveLoad}%<br>
+                ROE COMPLIANCE: ${data.roeCompliance}%<br>
+                TREMOR: ${data.microTremor}
+            `;
         };
     </script>
 </body>
