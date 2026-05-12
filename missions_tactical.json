@@ -1,157 +1,422 @@
 {
-  "sys": "KAMIZEN NEURO-COGNITIVE TACTICAL SYSTEM",
-  "version": "DOD-736-SFS-ELITE-STABLE-3.1",
-  "unit_alignment": "USAF SECURITY FORCES - NEURAL CONDITIONING",
-  "total_missions": 10,
-  "ui": {
-    "fw": [
-      "NEURO-STABILITY",
-      "COGNITIVE-LOAD",
-      "BIOMETRIC-CONTROL",
-      "ROE-COMPLIANCE",
-      "SITUATIONAL-DOMINANCE"
-    ]
-  },
-  "rules": [
-    "Biological Response < Professional Discipline",
-    "Adaptive Stress Requires Controlled Execution",
-    "ROE Compliance Overrides Performance Metrics",
-    "Cognitive Stability is Primary Objective"
-  ],
   "missions": [
     {
-      "id": 1,
-      "cat": "baseline_stability",
-      "focus": "VAGAL TONE & RESPIRATORY CONTROL",
-      "b": [
-        { "t": "v", "tx": { "en": "MISSION 1: NEURO BASELINE CALIBRATION. PREPARING TACTICAL VAGAL SYNC." } },
-        { "t": "breath_auto", "d": 44, "tx": { "en": "TACTICAL RESONANCE: 5.5s CYCLES" }, "inf": { "en": "Establish autonomic nervous system equilibrium for high-stakes engagement." } },
-        { "t": "r", "tx": { "en": "PHYSIOLOGICAL BASELINE LOCKED. OPERATOR PRIMED." }, "p": 100 }
-      ]
-    },
-    {
-      "id": 2,
-      "cat": "decision_core",
-      "focus": "PREFRONTAL CORTEX ACTIVATION",
-      "b": [
-        { "t": "v", "tx": { "en": "MISSION 2: DECISION PROCESSING CORE. ELIMINATING TUNNEL VISION." } },
-        { "t": "breath_auto", "d": 22, "tx": { "en": "OXYGENATING EXECUTIVE CENTERS" } },
-        { 
-          "t": "d", "q": { "en": "TARGET IDENTIFIED IN OBSCURED PERIMETER. ROE STATUS: AMBIGUOUS. PRIORITY?" },
-          "op": ["IMMEDIATE ENGAGEMENT", "REQUEST POSITIVE ID", "ESTIMATE THREAT LEVEL", "WITHDRAW"],
-          "c": 1, "ex": ["SFS Protocols prioritize Positive Identification (PID) to prevent blue-on-blue."] 
+      "id": "DOM-01",
+      "focus": "COHERENCE & VAGAL TONE",
+      "scenarios": [
+        {
+          "q": "Incoming fire from an unidentified high-rise. Visual contact not established. Priority?",
+          "options": [
+            {"text": "Seek immediate hard cover and establish communication link", "pts": 3},
+            {"text": "Return suppressive fire towards the general direction", "pts": 2},
+            {"text": "Hold position and wait for thermal scan overlay", "pts": 1},
+            {"text": "Advance to next objective point under smoke screen", "pts": 0}
+          ]
         },
-        { "t": "r", "tx": { "en": "DECISION CORE ACTIVE. LATENCY OPTIMIZED." }, "p": 150 }
-      ]
-    },
-    {
-      "id": 3,
-      "cat": "stress_introduction",
-      "focus": "ROE AMBIGUITY RESOLUTION",
-      "b": [
-        { "t": "v", "tx": { "en": "MISSION 3: STRESS INTRODUCTION. SIMULATING PERIMETER BREACH." } },
-        { "t": "sil", "d": 20, "tx": { "en": "FOCUS RETENTION UNDER SILENCE" } },
-        { 
-          "t": "d", "q": { "en": "CIVILIAN VEHICLE APPROACHING FLIGHT LINE AT HIGH SPEED. FIRST ACTION?" },
-          "op": ["LETHAL FORCE", "DEPLOY BARRIERS / CHALLENGE", "RADIO BASE ONLY", "EVACUATE AREA"],
-          "c": 1, "ex": ["Escalation of Force (EOF) requires non-lethal barriers first."] 
+        {
+          "q": "Ambush in a narrow corridor. Two teammates down. Low visibility. Action?",
+          "options": [
+            {"text": "Deploy defensive perimeter and initiate tactical extraction", "pts": 3},
+            {"text": "Secure the immediate sector and call for medivac", "pts": 2},
+            {"text": "Suppress fire while dragging personnel to cover", "pts": 1},
+            {"text": "Counter-attack blindly to break the ambush line", "pts": 0}
+          ]
         },
-        { "t": "r", "tx": { "en": "STRESS RESPONSE STABILIZED. CORTISOL SPIKE MANAGED." }, "p": 200 }
-      ]
-    },
-    {
-      "id": 4,
-      "cat": "roe_logic",
-      "focus": "STRESS-INDUCED JITTER MITIGATION",
-      "b": [
-        { "t": "v", "tx": { "en": "MISSION 4: ROE DECISION LOGIC. PROTOCOL OVER INSTINCT." } },
-        { "t": "breath_auto", "d": 33, "tx": { "en": "COHERENCE BREATHING" } },
-        { 
-          "t": "d", "q": { "en": "UNKNOWN SUBJECT WITH DRAWN WEAPON IN SECURE SECTOR. STATUS?" },
-          "op": ["WAIT FOR SPEECH", "CHALLENGE AND PREPARE TO ENGAGE", "RETREAT FOR COVER", "IGNORE"],
-          "c": 1, "ex": ["Immediate challenge with readiness is mandatory in high-threat sectors."] 
+        {
+          "q": "Sentry position. Motion detected in the gray zone. 02:00 hours. Protocol?",
+          "options": [
+            {"text": "Activate silent alert and verify via NVD", "pts": 3},
+            {"text": "Illuminate target area with flare and report", "pts": 2},
+            {"text": "Verbal challenge from a covered position", "pts": 1},
+            {"text": "Fire warning shots to deter movement", "pts": 0}
+          ]
+        },
+        {
+          "q": "Rooftop observation. Civilian group moving toward restricted zone. Decision?",
+          "options": [
+            {"text": "Alert ground patrol for non-lethal redirection", "pts": 3},
+            {"text": "Monitor movement and wait for direct breach", "pts": 2},
+            {"text": "Broadcast audio warning in local dialect", "pts": 1},
+            {"text": "Assume hostile intent and prepare kinetic response", "pts": 0}
+          ]
         }
       ]
     },
     {
-      "id": 5,
-      "cat": "cognitive_load",
-      "focus": "SITUATIONAL AWARENESS LATENCY",
-      "b": [
-        { "t": "v", "tx": { "en": "MISSION 5: COGNITIVE LOAD TEST. MULTI-SECTOR DATA STREAMING." } },
-        { "t": "sil", "d": 25, "tx": { "en": "MULTI-INPUT STABILIZATION PHASE" } },
-        { 
-          "t": "d", "q": { "en": "COMMS MALFUNCTION DURING ACTIVE INTRUSION. PRIORITY?" },
-          "op": ["REPAIR COMMS", "MAINTAIN VISUAL ON TARGET", "FALLBACK TO ANALOG SIGNALS", "ABANDON POST"],
-          "c": 1, "ex": ["Visual contact is primary; comms repair is secondary during engagement."] 
+      "id": "DOM-02",
+      "focus": "PREFRONTAL CORTEX STIMULATION",
+      "scenarios": [
+        {
+          "q": "Conflicting intelligence regarding target location. Time is critical. Move?",
+          "options": [
+            {"text": "Cross-reference with secondary drone feed before deployment", "pts": 3},
+            {"text": "Split the unit to cover both suspected locations", "pts": 2},
+            {"text": "Proceed to the most probable site with high caution", "pts": 1},
+            {"text": "Abort mission until 100% confirmation is received", "pts": 0}
+          ]
+        },
+        {
+          "q": "Urban CQB. Hostage identified near high-value target. ROE status?",
+          "options": [
+            {"text": "Switch to precision semi-auto; prioritize hostage safety", "pts": 3},
+            {"text": "Request flashbang deployment for controlled entry", "pts": 2},
+            {"text": "Bypass the room and seal all exits", "pts": 1},
+            {"text": "Full auto suppression to neutralize the room", "pts": 0}
+          ]
+        },
+        {
+          "text_variant": "Neutralize electronic interference or stabilize team morale?",
+          "q": "Critical system failure during exfiltration. Team morale dropping. Focus?",
+          "options": [
+            {"text": "Execute manual override while maintaining calm command", "pts": 3},
+            {"text": "Delegate technical fix and focus on perimeter security", "pts": 2},
+            {"text": "Prioritize immediate exit regardless of tech status", "pts": 1},
+            {"text": "Publicly express concern to alert command of danger", "pts": 0}
+          ]
+        },
+        {
+          "q": "Intercepted comms suggest a mole in the local support. Response?",
+          "options": [
+            {"text": "Isolate critical info and feed controlled misinformation", "pts": 3},
+            {"text": "Cut all ties with local support immediately", "pts": 2},
+            {"text": "Monitor support staff without changing routines", "pts": 1},
+            {"text": "Direct confrontation to identify the leak", "pts": 0}
+          ]
         }
       ]
     },
     {
-      "id": 6,
-      "cat": "anomaly_detection",
+      "id": "DOM-03",
+      "focus": "ROE JUDGMENT ACCURACY",
+      "scenarios": [
+        {
+          "q": "Non-combatant picking up a discarded weapon. Distance 50m. Engagement?",
+          "options": [
+            {"text": "Assess intent; maintain visual lock without firing", "pts": 3},
+            {"text": "Warning shot to the side of the individual", "pts": 2},
+            {"text": "Shout verbal commands to drop the weapon", "pts": 1},
+            {"text": "Eliminate target as an immediate threat", "pts": 0}
+          ]
+        },
+        {
+          "q": "Checkpoint Alpha. Vehicle accelerating but not stopping. Protocol?",
+          "options": [
+            {"text": "Deploy spike strips and fire at engine block", "pts": 3},
+            {"text": "Fire warning shots into the air", "pts": 2},
+            {"text": "Evacuate the checkpoint line immediately", "pts": 1},
+            {"text": "Lethal fire at the driver cabin", "pts": 0}
+          ]
+        },
+        {
+          "q": "Unmarked drone hovering above the medical tent. Neutralization?",
+          "options": [
+            {"text": "Deploy electronic jammer and notify command", "pts": 3},
+            {"text": "Physical shoot-down with small arms", "pts": 2},
+            {"text": "Relocate personnel inside the tent for safety", "pts": 1},
+            {"text": "Ignore unless kinetic movement is detected", "pts": 0}
+          ]
+        },
+        {
+          "q": "Armed group approaching with a white flag, but weapons are leveled. Intent?",
+          "options": [
+            {"text": "Demand weapons be grounded before negotiation", "pts": 3},
+            {"text": "Hold fire but keep targets in primary sight", "pts": 2},
+            {"text": "Advance to meet them half-way for visibility", "pts": 1},
+            {"text": "Open fire due to weapon positioning breach", "pts": 0}
+          ]
+        },
+        {
+      "id": "DOM-04",
+      "focus": "MICRO-TREMOR SUPPRESSION & MOTOR STABILITY",
+      "scenarios": [
+        {
+          "q": "Long-range overwatch. High wind speed, target moving intermittently. Precision shot?",
+          "options": [
+            {"text": "Exhale halfway, stabilize core, and time shot between gusts", "pts": 3},
+            {"text": "Wait for target to stop completely before adjusting windage", "pts": 2},
+            {"text": "Increase grip pressure to compensate for rifle sway", "pts": 1},
+            {"text": "Rapid fire to increase probability of a kinetic hit", "pts": 0}
+          ]
+        },
+        {
+          "q": "Breaching a heavy door. Adrenaline surge causing hand tremors. Stability?",
+          "options": [
+            {"text": "Execute tactile grounding (grip check) and focus on 11s breath", "pts": 3},
+            {"text": "Request a teammate to take the point to avoid delay", "pts": 2},
+            {"text": "Proceed with the breach using momentum to mask tremors", "pts": 1},
+            {"text": "Force entry immediately to bypass the physiological spike", "pts": 0}
+          ]
+        },
+        {
+          "q": "IED Defusal. Wire identification requires extreme micro-motor control. Action?",
+          "options": [
+            {"text": "Isolate distal muscle groups; synchronize movement with exhale", "pts": 3},
+            {"text": "Use mechanical stabilizers to hold the primary housing", "pts": 2},
+            {"text": "Cut quickly to minimize the duration of exposure", "pts": 1},
+            {"text": "Apply cooling agent to fingers to reduce nerve sensitivity", "pts": 0}
+          ]
+        },
+        {
+          "q": "Navigating a pitch-black crawlspace. Sensory deprivation causing dizziness. Focus?",
+          "options": [
+            {"text": "Maintain 3 points of contact; internalize rhythmic breathing", "pts": 3},
+            {"text": "Increase speed to reach the exit as fast as possible", "pts": 2},
+            {"text": "Utilize white light intermittently to recalibrate vision", "pts": 1},
+            {"text": "Stop movement and wait for external signal guidance", "pts": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DOM-05",
+      "focus": "SITUATIONAL LATENCY & FAST PROCESSING",
+      "scenarios": [
+        {
+          "q": "Entering a room: 3 figures. 1 armed, 1 surrendering, 1 reaching for a phone. Priority?",
+          "options": [
+            {"text": "Neutralize armed threat; vocal commands for the other two", "pts": 3},
+            {"text": "Secure all individuals on the floor simultaneously", "pts": 2},
+            {"text": "Flashbang entry to reset all occupants' cognitive load", "pts": 1},
+            {"text": "Eliminate target with the phone to prevent data leak", "pts": 0}
+          ]
+        },
+        {
+          "q": "Sudden power cut in the command center. Multiple alarms sounding. Response?",
+          "options": [
+            {"text": "Silent scan of perimeter; prioritize life-support systems", "pts": 3},
+            {"text": "Reboot primary servers while maintaining backup light", "pts": 2},
+            {"text": "Evacuate non-essential personnel to the rally point", "pts": 1},
+            {"text": "Broadcast an all-clear to prevent mass panic", "pts": 0}
+          ]
+        },
+        {
+          "q": "A vehicle swerves into your convoy's path. Driver appears unconscious. Action?",
+          "options": [
+            {"text": "Controlled maneuver to intercept/stop; maintain security", "pts": 3},
+            {"text": "Veer off-road to avoid any contact with the vehicle", "pts": 2},
+            {"text": "Ram the vehicle out of the path to maintain speed", "pts": 1},
+            {"text": "Stop the entire convoy and dismount for inspection", "pts": 0}
+          ]
+        },
+        {
+          "q": "Friendly fire incident reported in the adjacent sector. Comms jammed. Decision?",
+          "options": [
+            {"text": "Deploy physical signal (flare/strobe); hold fire immediately", "pts": 3},
+            {"text": "Send a runner to the sector to verify status manually", "pts": 2},
+            {"text": "Continue mission but change frequency to clear jamming", "pts": 1},
+            {"text": "Fire into the air to alert all units to stop movement", "pts": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DOM-06",
       "focus": "COGNITIVE LOAD SHIFTING",
-      "b": [
-        { "t": "v", "tx": { "en": "MISSION 6: ANOMALY DETECTION. IDENTIFYING SUBTLE THREATS." } },
-        { "t": "breath_auto", "d": 22, "tx": { "en": "HYPER-FOCUS BREATHING" } },
-        { 
-          "t": "d", "q": { "en": "SUBJECT BEHAVIOR DEVIATES FROM BASELINE DURING INTERROGATION. CLASSIFY?" },
-          "op": ["NORMAL ANXIETY", "DECEPTIVE / SUSPICIOUS", "IMMEDIATE THREAT", "DATA ERROR"],
-          "c": 1, "ex": ["Identifying deceptive indicators is vital for Force Protection."] 
+      "scenarios": [
+        {
+          "q": "Radio reporting 3 different crises. Tech failure, injured civilian, and ammo low. Focus?",
+          "options": [
+            {"text": "Address ammo status first to ensure defense capability", "pts": 3},
+            {"text": "Delegate tech fix; treat civilian while reloading", "pts": 2},
+            {"text": "Request immediate extraction to regroup all assets", "pts": 1},
+            {"text": "Ignore the radio to focus on the immediate physical threat", "pts": 0}
+          ]
+        },
+        {
+          "q": "Navigating a minefield while under light sniper fire. Task prioritization?",
+          "options": [
+            {"text": "Identify hard cover; move only after path verification", "pts": 3},
+            {"text": "Sprint to the nearest cover regardless of the ground", "pts": 2},
+            {"text": "Return fire while crawling slowly through the field", "pts": 1},
+            {"text": "Lay flat and wait for smoke cover to be deployed", "pts": 0}
+          ]
+        },
+        {
+          "q": "You are the acting lead. Two contradicting orders from Command. Choice?",
+          "options": [
+            {"text": "Execute the order that preserves the mission and lives", "pts": 3},
+            {"text": "Hold position and demand a single clear directive", "pts": 2},
+            {"text": "Follow the first order received chronologically", "pts": 1},
+            {"text": "Follow the order from the highest-ranking officer only", "pts": 0}
+          ]
+        },
+        {
+          "q": "Hostile prisoner claiming to have info on an imminent attack. Veracity?",
+          "options": [
+            {"text": "Cross-check details with known intel; keep prisoner isolated", "pts": 3},
+            {"text": "Believe the info and redirect forces immediately", "pts": 2},
+            {"text": "Use aggressive interrogation to confirm the data", "pts": 1},
+            {"text": "Discard the info as a tactical distraction/trap", "pts": 0}
+          ]
+        },
+        {
+      "id": "DOM-07",
+      "focus": "THERMAL REGULATION & METABOLIC CONTROL",
+      "scenarios": [
+        {
+          "q": "Extreme heat during covert surveillance. Dehydration onset detected. Action?",
+          "options": [
+            {"text": "Regulate breathing to 11s cycle; small sips of electrolyte fluid", "pts": 3},
+            {"text": "Request immediate relief from position to avoid syncope", "pts": 2},
+            {"text": "Consume full water supply quickly to reset core temperature", "pts": 1},
+            {"text": "Ignore symptoms and tighten gear to stay focused", "pts": 0}
+          ]
+        },
+        {
+          "q": "Arctic environment. Hands losing sensation during weapon maintenance. Protocol?",
+          "options": [
+            {"text": "Utilize core body heat for hands; prioritize critical functions", "pts": 3},
+            {"text": "Rub hands together vigorously to force circulation", "pts": 2},
+            {"text": "Continue task quickly before total numbness occurs", "pts": 1},
+            {"text": "Apply chemical heaters directly to skin for rapid warming", "pts": 0}
+          ]
+        },
+        {
+          "q": "Gas mask deployment in a high-humidity zone. Fogging impeding vision. Response?",
+          "options": [
+            {"text": "Controlled nasal breathing; use tactile landmarks for movement", "pts": 3},
+            {"text": "Slightly break seal to clear fog with external air", "pts": 2},
+            {"text": "Stop all movement and wait for air quality to improve", "pts": 1},
+            {"text": "Remove mask briefly to clean lens in the contaminated zone", "pts": 0}
+          ]
+        },
+        {
+          "q": "Rapid ascent/descent in mountainous terrain. Hypoxia risk detected. Action?",
+          "options": [
+            {"text": "Engage forced-pressure breathing; reduce physical pace", "pts": 3},
+            {"text": "Request supplementary oxygen and hold current altitude", "pts": 2},
+            {"text": "Increase speed to reach lower altitude faster", "pts": 1},
+            {"text": "Hyperventilate to increase oxygen intake immediately", "pts": 0}
+          ]
         }
       ]
     },
     {
-      "id": 7,
-      "cat": "adaptive_pressure",
-      "focus": "MOTOR-NEURON STABILIZATION",
-      "b": [
-        { "t": "v", "tx": { "en": "MISSION 7: ADAPTIVE PRESSURE SYSTEM. SIMULATING EQUIPMENT FAILURE." } },
-        { "t": "sil", "d": 30, "tx": { "en": "DYNAMIC LOAD SIMULATION" } },
-        { 
-          "t": "d", "q": { "en": "NIGHT VISION FAILURE DURING PERIMETER SWEEP. ACTION?" },
-          "op": ["PROCEED IN DARK", "USE WHITE LIGHT / EXPOSE POSITION", "TRANSITION TO SECONDARY SENSOR", "ABORT PATROL"],
-          "c": 2, "ex": ["Operator must transition to available sensors without compromising stealth."] 
+      "id": "DOM-08",
+      "focus": "ETHICAL LOAD & COLLATERAL MINIMIZATION",
+      "scenarios": [
+        {
+          "q": "Target identified inside a place of worship. Hostiles are armed. Decision?",
+          "options": [
+            {"text": "Establish visual containment; wait for target to exit structure", "pts": 3},
+            {"text": "Deploy non-lethal gas to flush out all occupants", "pts": 2},
+            {"text": "Infiltrate with small team using precision-only weapons", "pts": 1},
+            {"text": "Air strike the structure to ensure target neutralization", "pts": 0}
+          ]
+        },
+        {
+          "q": "Hostile using a civilian as a human shield. Direct threat to your unit. ROE?",
+          "options": [
+            {"text": "Reposition for an oblique angle; wait for a clear 100% shot", "pts": 3},
+            {"text": "Fire at the hostile's exposed lower extremities", "pts": 2},
+            {"text": "Hold fire and attempt a high-stress verbal negotiation", "pts": 1},
+            {"text": "Engage both targets to eliminate the threat to the unit", "pts": 0}
+          ]
+        },
+        {
+          "q": "Wounded enemy soldier reaching for a radio. No medic available. Response?",
+          "options": [
+            {"text": "Disarm and secure the soldier; apply basic field dressing", "pts": 3},
+            {"text": "Destroy the radio from distance and leave the area", "pts": 2},
+            {"text": "Order the soldier to move away from the device at gunpoint", "pts": 1},
+            {"text": "Eliminate the soldier to prevent intel leak/reinforcements", "pts": 0}
+          ]
+        },
+        {
+          "q": "Evidence of local friendly forces committing a war crime. Your action?",
+          "options": [
+            {"text": "Document evidence and report through secure command channels", "pts": 3},
+            {"text": "Intervene physically to stop the action immediately", "pts": 2},
+            {"text": "Discuss the incident with the friendly commander privately", "pts": 1},
+            {"text": "Ignore the event to maintain the tactical alliance", "pts": 0}
+          ]
         }
       ]
     },
     {
-      "id": 8,
-      "cat": "scenario_logic",
-      "focus": "HEMISPHERIC SYNCHRONIZATION",
-      "b": [
-        { "t": "v", "tx": { "en": "MISSION 8: SCENARIO BRANCHING. COMPLEX THREAT PRIORITIZATION." } },
-        { "t": "breath_auto", "d": 22, "tx": { "en": "CROSS-LATERAL NEURAL SYNC" } },
-        { 
-          "t": "d", "q": { "en": "MULTIPLE SIGNALS: IED ALERT (NORTH) AND DIRECT FIRE (SOUTH). PRIORITIZE?" },
-          "op": ["NEUTRALIZE FIRE", "EVACUATE NORTH", "SPLIT SQUAD", "SUPPRESS FIRE / FLANK"],
-          "c": 0, "ex": ["Immediate direct fire is the highest kinetic threat."] 
+      "id": "DOM-09",
+      "focus": "CYBER-TACTICAL & SIGNAL DISCIPLINE",
+      "scenarios": [
+        {
+          "q": "Electronic warfare alert. GPS signal is showing a 200m offset. Navigation?",
+          "options": [
+            {"text": "Switch to analog map and compass; verify via terrain features", "pts": 3},
+            {"text": "Reboot the GPS unit and wait for signal re-acquisition", "pts": 2},
+            {"text": "Follow the GPS but apply a manual 200m correction", "pts": 1},
+            {"text": "Continue using GPS; assume the error is a minor glitch", "pts": 0}
+          ]
+        },
+        {
+          "q": "Smart-gear pinging an unknown Bluetooth attempt. Security status?",
+          "options": [
+            {"text": "Hard-shutdown all wireless modules; switch to wired comms", "pts": 3},
+            {"text": "Ignore the ping as it is likely civilian interference", "pts": 2},
+            {"text": "Attempt to trace the source of the ping via the HUD", "pts": 1},
+            {"text": "Change the device's name to a deceptive tactical ID", "pts": 0}
+          ]
+        },
+        {
+          "q": "Drone feed is lagging by 4 seconds during a live breach. Choice?",
+          "options": [
+            {"text": "Abort the drone-dependent move; use physical point-man", "pts": 3},
+            {"text": "Proceed but move slower to compensate for the lag", "pts": 2},
+            {"text": "Request a second drone to provide an alternate feed", "pts": 1},
+            {"text": "Trust the last clear frame and execute the breach", "pts": 0}
+          ]
+        },
+        {
+          "q": "Suspected tracking device found on a teammate's gear. Protocol?",
+          "options": [
+            {"text": "Place tracker on a decoy and move in the opposite direction", "pts": 3},
+            {"text": "Destroy the tracker immediately and continue the mission", "pts": 2},
+            {"text": "Leave the tracker in place to see who comes to retrieve it", "pts": 1},
+            {"text": "Keep the tracker to study its tech after the mission", "pts": 0}
+          ]
         }
       ]
     },
     {
-      "id": 9,
-      "cat": "integration",
-      "focus": "PERIPHERAL VISION RETENTION",
-      "b": [
-        { "t": "v", "tx": { "en": "MISSION 9: SYSTEM INTEGRATION. FULL BIO-DATA SYNTHESIS." } },
-        { "t": "breath_auto", "d": 44, "tx": { "en": "FULL SYSTEM ALIGNMENT - PEAK READINESS" }, "inf": { "en": "Synchronize neural and motor response for zero-latency execution." } },
-        { 
-          "t": "d", "q": { "en": "ALL SYSTEMS NOMINAL. CHOOSE OPTIMAL COMBAT STATE." },
-          "op": ["HYPER-AROUSAL", "FLOW STATE", "RELAXED", "ANXIOUS"],
-          "c": 1, "ex": ["Flow State provides the highest decision accuracy in tactical environments."] 
+      "id": "DOM-10",
+      "focus": "POST-MISSION NEURAL INTEGRATION",
+      "scenarios": [
+        {
+          "q": "Mission completed. Sustained high-cortisol for 48 hours. Recovery?",
+          "options": [
+            {"text": "Engage in 20min box-breathing and cognitive defusing", "pts": 3},
+            {"text": "Sleep immediately to force physical system recovery", "pts": 2},
+            {"text": "Conduct a high-intensity workout to 'burn off' adrenaline", "pts": 1},
+            {"text": "Use chemical depressants to force a physiological shutdown", "pts": 0}
+          ]
+        },
+        {
+          "q": "Recurrent intrusive thoughts of a tactical failure. Mental state?",
+          "options": [
+            {"text": "Tactical de-briefing with focus on objective facts, not guilt", "pts": 3},
+            {"text": "Compartmentalize the memory and focus on the next mission", "pts": 2},
+            {"text": "Discuss feelings with teammates in a non-formal setting", "pts": 1},
+            {"text": "Self-medicate to suppress the recurring imagery", "pts": 0}
+          ]
+        },
+        {
+          "q": "Difficulty transitioning from tactical 'high-alert' to base life. Action?",
+          "options": [
+            {"text": "Implement a strict 'decompression' routine (meditation/gym)", "pts": 3},
+            {"text": "Maintain high-alert status to ensure perpetual readiness", "pts": 2},
+            {"text": "Request an immediate return to the field to avoid 'the dip'", "pts": 1},
+            {"text": "Avoid social interaction until the 'edge' wears off naturally", "pts": 0}
+          ]
+        },
+        {
+          "q": "Unexplained tremors in hands 12 hours after combat. Response?",
+          "options": [
+            {"text": "Report to medical for neural-overload assessment; hydrate", "pts": 3},
+            {"text": "Hide the tremors to avoid being flagged as 'unfit'", "pts": 2},
+            {"text": "Wait 24 hours to see if they resolve on their own", "pts": 1},
+            {"text": "Increase caffeine intake to 'steady' the nerves", "pts": 0}
+          ]
         }
-      ]
-    },
-    {
-      "id": 10,
-      "cat": "final_readiness",
-      "focus": "EXECUTIVE DECISION EXCELLENCE",
-      "b": [
-        { "t": "v", "tx": { "en": "MISSION 10: OPERATIONAL READINESS CHECK. PRE-VR DEPLOYMENT." } },
-        { "t": "sil", "d": 15, "tx": { "en": "FINAL NEURAL QUIET" } },
-        { "t": "r", "tx": { "en": "OPERATOR READY FOR VR SIMULATION. KAMIZEN ELITE STATUS GRANTED." }, "p": 1000 }
       ]
     }
   ]
 }
+        
